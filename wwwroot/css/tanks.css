@@ -1,0 +1,146 @@
+﻿body {
+    background-color: #E6F7FF;
+    font-family: sans-serif;
+}
+
+.table-container {
+    margin: 3rem auto 2rem auto;
+    width: 60vw;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+table .table-caption {
+    caption-side: top;
+    text-align: center;
+    font-size: 1.75rem;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.button-footer {
+    margin-top: 2rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.btn-blue {
+    background-color: #5CC1FF;
+    color: #fff;
+}
+
+.btn-red {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-black {
+    background-color: #000000;
+    color: antiquewhite;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+th, td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    font-weight: bold;
+    text-align: left;
+}
+
+th.edit, td.edit,
+th.details, td.details,
+th.delete, td.delete {
+    width: 100px;
+    text-align: center;
+}
+
+.form-container {
+    margin: 3rem auto;
+    width: 60vw;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    border: 1px solid #cccccc;
+    border-radius: 12px;
+}
+
+.card-header {
+    background-color: rgba(0,123,255,0.1);
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.card-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #007bff;
+    text-align: center;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+.grid-full {
+    grid-column: 1 / -1;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+    }
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}

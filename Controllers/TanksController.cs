@@ -17,7 +17,10 @@ namespace VirtualAquariumManager.Controllers
         // GET: Tanks
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tank.ToListAsync());
+            var tanks = await _context.Tank
+                         .Include(t => t.WaterQuality)
+                         .ToListAsync();
+            return View(tanks);
         }
 
         // GET: Tanks/Details/5
@@ -49,7 +52,7 @@ namespace VirtualAquariumManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Shape,Size")] Tank tank)
+        public async Task<IActionResult> Create(Tank tank)
         {
             if (ModelState.IsValid)
             {

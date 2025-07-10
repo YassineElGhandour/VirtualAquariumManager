@@ -3,9 +3,9 @@
     public class WaterQuality
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public float PhLevel { get; set; }
-        public float Temperature { get; set; }
-        public float AmmoniaLevel { get; set; }
+        public decimal PhLevel { get; set; }
+        public decimal Temperature { get; set; }
+        public decimal AmmoniaLevel { get; set; }
         public string? WaterType { get; set; }
     }
 }

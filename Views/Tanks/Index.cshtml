@@ -1,41 +1,55 @@
 ﻿@model IEnumerable<VirtualAquariumManager.Models.Tank>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Tanks";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<div class="table-container">
+    <table>
+        <caption class="table-caption">Active Tanks</caption>
+        <br />
+        <thead>
+            <tr>
+                <th>Shape</th>
+                <th>Size (L)</th>
+                <th>Water Type</th>
+                <th>pH</th>
+                <th>Temp (°C)</th>
+                <th>Ammonia (ppm)</th>
+                <th># Tasks</th>
+                <th class="edit">Edit</th>
+                <th class="details">Details</th>
+                <th class="delete">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tank in Model)
+            {
+                var wq = tank.WaterQuality;
+                <tr>
+                    <td>@tank.Shape</td>
+                    <td>@tank.Size.ToString("0.0")</td>
+                    <td>@(wq?.WaterType ?? "—")</td>
+                    <td>@(wq != null ? wq.PhLevel.ToString("0.0") : "—")</td>
+                    <td>@(wq != null ? wq.Temperature.ToString("0.0") : "—")</td>
+                    <td>@(wq != null ? wq.AmmoniaLevel.ToString("0.0") : "—")</td>
+                    <td>@(tank.MaintenanceTasks?.Count ?? 0)</td>
+                    <td class="edit">
+                        <a asp-action="Edit" asp-route-id="@tank.Id" class="btn btn-blue">Edit</a>
+                    </td>
+                    <td class="details">
+                        <a asp-action="Details" asp-route-id="@tank.Id" class="btn btn-blue">Details</a>
+                    </td>
+                    <td class="delete">
+                        <a asp-action="Delete" asp-route-id="@tank.Id" class="btn btn-red">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Shape)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Size)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Shape)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Size)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="button-container button-footer">
+        <a asp-action="Create" class="btn btn-blue">Create New Tank</a>
+    </div>
+</div>
