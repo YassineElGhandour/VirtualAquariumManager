@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 using VirtualAquariumManager.Data;
 using VirtualAquariumManager.Models;
 
@@ -15,8 +16,12 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Tanks
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
+            if (page < 1) page = 1;
+
+            var totalTanksCount = await _context.Tank.CountAsync();
+
             var tanks = await _context.Tank
                          .Include(t => t.WaterQuality)
                          .ToListAsync();
@@ -32,7 +37,8 @@ namespace VirtualAquariumManager.Controllers
             }
 
             var tank = await _context.Tank
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(t => t.WaterQuality)
+                .FirstOrDefaultAsync(t => t.Id == id);
             if (tank == null)
             {
                 return NotFound();
@@ -72,7 +78,10 @@ namespace VirtualAquariumManager.Controllers
                 return NotFound();
             }
 
-            var tank = await _context.Tank.FindAsync(id);
+            var tank = await _context.Tank
+                .Include(t => t.WaterQuality)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
             if (tank == null)
             {
                 return NotFound();
@@ -85,7 +94,7 @@ namespace VirtualAquariumManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Shape,Size")] Tank tank)
+        public async Task<IActionResult> Edit(Guid id, Tank tank)
         {
             if (id != tank.Id)
             {

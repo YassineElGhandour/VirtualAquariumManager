@@ -3,9 +3,15 @@
     font-family: sans-serif;
 }
 
+.view-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
 .table-container {
     margin: 3rem auto 2rem auto;
-    width: 60vw;
     padding: 1rem;
     background-color: white;
     border-radius: 8px;
@@ -143,4 +149,35 @@ th.delete, td.delete {
     justify-content: flex-end;
     gap: 1rem;
     margin-top: 0.5rem;
+}
+
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+.grid-full {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.form-grid-3 dl {
+    margin: 0;
+    padding: 0.75rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.form-grid-3 dt {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.form-grid-3 dd {
+    margin: 0;
 }

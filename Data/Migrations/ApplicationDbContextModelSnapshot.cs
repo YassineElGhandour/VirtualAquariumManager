@@ -293,11 +293,14 @@ namespace VirtualAquariumManager.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Shape")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("Size")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Size")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid?>("WaterQualityId")
                         .HasColumnType("uniqueidentifier");
@@ -350,14 +353,17 @@ namespace VirtualAquariumManager.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<float>("AmmoniaLevel")
-                        .HasColumnType("real");
+                    b.Property<decimal>("AmmoniaLevel")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<float>("PhLevel")
-                        .HasColumnType("real");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<float>("Temperature")
-                        .HasColumnType("real");
+                    b.Property<decimal>("PhLevel")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Temperature")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("WaterType")
                         .HasColumnType("nvarchar(max)");

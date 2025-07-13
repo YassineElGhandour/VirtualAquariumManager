@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Create Tank";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="form-container">
@@ -22,7 +21,8 @@
 
         <div class="form-field">
             <label asp-for="Size">Size (Liters)</label>
-            <input asp-for="Size" class="form-control" placeholder="e.g. 75" />
+            <input asp-for="Size" type="number" step="any" class="form-control" placeholder="e.g. 75" />
+            <span asp-validation-for="Size" class="text-danger"></span>
         </div>
 
         <!-- WaterQuality fields -->
@@ -30,19 +30,19 @@
 
         <div class="form-field">
             <label asp-for="WaterQuality.PhLevel"></label>
-            <input asp-for="WaterQuality.PhLevel" class="form-control" placeholder="e.g. 7" />
+            <input asp-for="WaterQuality.PhLevel" type="number" step="any" class="form-control" placeholder="e.g. 7" />
             <span asp-validation-for="WaterQuality.PhLevel" class="text-danger"></span>
         </div>
 
         <div class="form-field">
             <label asp-for="WaterQuality.Temperature"></label>
-            <input asp-for="WaterQuality.Temperature" class="form-control" placeholder="°C" />
+            <input asp-for="WaterQuality.Temperature" type="number" step="any" class="form-control" placeholder="°C" />
             <span asp-validation-for="WaterQuality.Temperature" class="text-danger"></span>
         </div>
 
         <div class="form-field">
             <label asp-for="WaterQuality.AmmoniaLevel"></label>
-            <input asp-for="WaterQuality.AmmoniaLevel" class="form-control" placeholder="ppm" />
+            <input asp-for="WaterQuality.AmmoniaLevel" type="number" step="any" class="form-control" placeholder="ppm" />
             <span asp-validation-for="WaterQuality.AmmoniaLevel" class="text-danger"></span>
         </div>
 
@@ -52,6 +52,7 @@
             <span asp-validation-for="WaterQuality.WaterType" class="text-danger"></span>
         </div>
 
+        <!-- Create or Cancel -->
         <div class="form-actions grid-full">
             <button type="submit" class="btn btn-blue">Create</button>
             <a asp-action="Index" class="btn btn-red">Cancel</a>
