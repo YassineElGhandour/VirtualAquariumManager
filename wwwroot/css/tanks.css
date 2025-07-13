@@ -52,6 +52,7 @@ th {
     text-align: left;
 }
 
+th.fish, td.fish,
 th.edit, td.edit,
 th.details, td.details,
 th.delete, td.delete {
