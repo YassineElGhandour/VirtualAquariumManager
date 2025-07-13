@@ -83,6 +83,7 @@ namespace VirtualAquariumManager.Controllers
             var tank = await _context.Tank
                 .Include(t => t.WaterQuality)
                 .FirstOrDefaultAsync(t => t.Id == id);
+
             if (tank == null)
             {
                 return NotFound();
@@ -167,7 +168,10 @@ namespace VirtualAquariumManager.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(
+                    nameof(Details),
+                    new { id = tank.Id }
+                );
             }
             return View(tank);
         }

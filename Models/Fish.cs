@@ -7,8 +7,8 @@
             Species = Species.Fish;
         }
 
-        public Tank Tank { get; set; }
-        public FeedingTask NextFeeding { get; set; }
-        public List<FeedingTask> FeedingTasks { get; set; } = [];
+        public required Tank Tank { get; set; }
+        public FeedingTask? NextFeeding { get; set; }
+        public List<FeedingTask>? FeedingTasks { get; set; } = [];
     }
 }

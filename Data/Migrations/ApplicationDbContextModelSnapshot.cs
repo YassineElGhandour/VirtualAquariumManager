@@ -269,9 +269,6 @@ namespace VirtualAquariumManager.Data.Migrations
                     b.Property<DateTime>("PerformedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ReviewerId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("TankId")
                         .HasColumnType("uniqueidentifier");
 
@@ -279,8 +276,6 @@ namespace VirtualAquariumManager.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReviewerId");
 
                     b.HasIndex("TankId");
 
@@ -297,12 +292,13 @@ namespace VirtualAquariumManager.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Shape")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Size")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid?>("WaterQualityId")
+                    b.Property<Guid>("WaterQualityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -312,48 +308,13 @@ namespace VirtualAquariumManager.Data.Migrations
                     b.ToTable("Tank");
                 });
 
-            modelBuilder.Entity("VirtualAquariumManager.Models.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
-                });
-
             modelBuilder.Entity("VirtualAquariumManager.Models.WaterQuality", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("AmmoniaLevel")
+                    b.Property<decimal?>("AmmoniaLevel")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedDate")
@@ -366,6 +327,7 @@ namespace VirtualAquariumManager.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("WaterType")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -433,24 +395,18 @@ namespace VirtualAquariumManager.Data.Migrations
 
             modelBuilder.Entity("VirtualAquariumManager.Models.MaintenanceTask", b =>
                 {
-                    b.HasOne("VirtualAquariumManager.Models.User", "Reviewer")
-                        .WithMany()
-                        .HasForeignKey("ReviewerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("VirtualAquariumManager.Models.Tank", null)
                         .WithMany("MaintenanceTasks")
                         .HasForeignKey("TankId");
-
-                    b.Navigation("Reviewer");
                 });
 
             modelBuilder.Entity("VirtualAquariumManager.Models.Tank", b =>
                 {
                     b.HasOne("VirtualAquariumManager.Models.WaterQuality", "WaterQuality")
                         .WithMany()
-                        .HasForeignKey("WaterQualityId");
+                        .HasForeignKey("WaterQualityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("WaterQuality");
                 });
