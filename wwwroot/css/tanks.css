@@ -79,6 +79,10 @@ th.delete, td.delete {
     color: #fff;
 }
 
+.btn-blue {
+    background-color: #5CC1FF;
+}
+
 .btn-blue-var-1 {
     background-color: #C0EEF6
 }
@@ -87,8 +91,8 @@ th.delete, td.delete {
     background-color: #dc3545;
 }
 
-.btn-blue {
-    background-color: #5CC1FF;
+.btn-green {
+    background-color: #5DD9B1;
 }
 
 .btn-black {

@@ -10,7 +10,7 @@
     var counter = (pageIndex - 1) * pageSize;
 }
 
-<div class="view-wrapper">
+<div class="view-wrapper mx-4">
     <div class="table-container">
 
         <div class="button-container button-footer" style="display:flex; justify-content:space-between; align-items:center;">
@@ -39,7 +39,7 @@
                     <th>pH</th>
                     <th>Temp (°C)</th>
                     <th>Ammonia (ppm)</th>
-                    <th># Tasks</th>
+                    <th>Fish</th>
                     <th class="edit">Edit</th>
                     <th class="details">Details</th>
                     <th class="delete">Delete</th>
@@ -68,7 +68,9 @@
                             <td>@(wq != null ? wq.PhLevel : "—")</td>
                             <td>@(wq != null ? wq.Temperature : "—")</td>
                             <td>@(wq != null ? wq.AmmoniaLevel : "—")</td>
-                            <td>@(tank.MaintenanceTasks?.Count ?? 0)</td>
+                            <td class="fish">
+                                <a asp-action="Edit" asp-route-id="@tank.Id" class="btn btn-green">Explore</a>
+                            </td>
                             <td class="edit">
                                 <a asp-action="Edit" asp-route-id="@tank.Id" class="btn btn-blue">Edit</a>
                             </td>
