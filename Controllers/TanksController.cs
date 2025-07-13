@@ -19,6 +19,8 @@ namespace VirtualAquariumManager.Controllers
         [Authorize]
         public async Task<IActionResult> Index(string SearchString, int page = 1, int pageSize = 10)
         {
+            ViewBag.CurrentSearchString = SearchString;
+            
             if (page < 1)
             {
                 page = 1;
