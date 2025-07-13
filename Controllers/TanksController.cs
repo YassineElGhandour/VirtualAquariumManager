@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
 using VirtualAquariumManager.Data;
 using VirtualAquariumManager.Models;
 
@@ -16,6 +16,7 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Tanks
+        [Authorize]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
             if (page < 1) page = 1;
@@ -23,12 +24,21 @@ namespace VirtualAquariumManager.Controllers
             var totalTanksCount = await _context.Tank.CountAsync();
 
             var tanks = await _context.Tank
-                         .Include(t => t.WaterQuality)
-                         .ToListAsync();
+                        .Include(t => t.WaterQuality)
+                        .OrderBy(t => t.CreatedDate)
+                        .Skip((page - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToListAsync();
+
+            ViewBag.PageIndex = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalCount = totalTanksCount;
+
             return View(tanks);
         }
 
         // GET: Tanks/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -48,6 +58,7 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Tanks/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -58,6 +69,7 @@ namespace VirtualAquariumManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create(Tank tank)
         {
             if (ModelState.IsValid)
@@ -71,6 +83,7 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Tanks/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -94,6 +107,7 @@ namespace VirtualAquariumManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(Guid id, Tank tank)
         {
             if (id != tank.Id)
@@ -125,6 +139,7 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Tanks/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -145,6 +160,7 @@ namespace VirtualAquariumManager.Controllers
         // POST: Tanks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var tank = await _context.Tank.FindAsync(id);

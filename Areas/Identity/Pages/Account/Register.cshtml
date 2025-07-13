@@ -1,0 +1,53 @@
+﻿@page
+@model RegisterModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="d-flex justify-content-center pt-5">
+    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="bg-white p-4 rounded shadow-sm" style="width: 360px;">
+        <h1 class="h5 mb-4 text-center">@ViewData["Title"]</h1>
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+        <div class="mb-3">
+            <label asp-for="Input.Email" class="form-label">Email</label>
+            <input asp-for="Input.Email"
+                   class="form-control"
+                   autocomplete="username" />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Input.Password" class="form-label">Password</label>
+            <input asp-for="Input.Password"
+                   type="password"
+                   class="form-control"
+                   autocomplete="new-password" />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
+            <input asp-for="Input.ConfirmPassword"
+                   type="password"
+                   class="form-control"
+                   autocomplete="new-password" />
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <button id="registerSubmit" type="submit" class="btn btn-success w-100 mb-3">
+            Register
+        </button>
+
+        <div class="d-flex justify-content-between small">
+            <a asp-page="./Login">Already have an account?</a>
+            <a asp-page="./ForgotPassword">Forgot password?</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

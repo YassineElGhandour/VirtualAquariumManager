@@ -2,15 +2,30 @@
 
 @{
     ViewData["Title"] = "Tanks";
+    var pageIndex = (int)(ViewBag.PageIndex ?? 1);
+    var pageSize = (int)(ViewBag.PageSize ?? 10);
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+    var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+    var counter = (pageIndex - 1) * pageSize;
 }
 
 <div class="view-wrapper">
     <div class="table-container">
+
+        <div class="button-container button-footer">
+            <form asp-action="Index" method="get">
+                <input type="text" name="search" class="search-input" placeholder="Search tanks..." value="@(ViewBag.Search ?? "")" />
+            </form>
+            <a asp-action="Create" class="btn btn-blue btn-create">Create New Tank</a>
+        </div>
+
+        <hr class="section-divider" />
+
         <table>
             <caption class="table-caption">Active Tanks</caption>
-            <br />
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Creation</th>
                     <th>Time</th>
                     <th>Shape</th>
@@ -29,21 +44,21 @@
                 @if (!Model.Any())
                 {
                     <tr>
-                        <td colspan="11" class="text-center">
-                            No tanks are found in the system
-                        </td>
+                        <td colspan="13" class="text-center">No tanks are found in the system</td>
                     </tr>
                 }
                 else
                 {
                     @foreach (var tank in Model)
                     {
+                        counter++;
                         var wq = tank.WaterQuality;
                         <tr>
+                            <td>@counter</td>
                             <td>@tank.CreatedDate.ToString("yyyy")</td>
                             <td>@tank.CreatedDate.ToString("HH:mm:ss")</td>
                             <td>@tank.Shape</td>
-                            <td>@tank.Size.ToString("0.0")</td>
+                            <td>@tank.Size</td>
                             <td>@(wq?.WaterType ?? "—")</td>
                             <td>@(wq != null ? wq.PhLevel : "—")</td>
                             <td>@(wq != null ? wq.Temperature : "—")</td>
@@ -64,9 +79,21 @@
             </tbody>
         </table>
 
-        <div class="button-container button-footer">
-            <a asp-action="Create" class="btn btn-blue">Create New Tank</a>
+        <div class="pagination">
+            @if (pageIndex > 1)
+            {
+                <a asp-action="Index" asp-route-page="@(pageIndex - 1)">« Prev</a>
+            }
+            @for (var i = 1; i <= totalPages; i++)
+            {
+                var cls = i == pageIndex ? "current" : "";
+                <a asp-action="Index" asp-route-page="@i" class="@cls">@i</a>
+            }
+            @if (pageIndex < totalPages)
+            {
+                <a asp-action="Index" asp-route-page="@(pageIndex + 1)">Next »</a>
+            }
         </div>
+
     </div>
 </div>
-
