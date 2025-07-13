@@ -12,10 +12,14 @@
 <div class="view-wrapper">
     <div class="table-container">
 
-        <div class="button-container button-footer">
-            <form asp-action="Index" method="get">
-                <input type="text" name="search" class="search-input" placeholder="Search tanks..." value="@(ViewBag.Search ?? "")" />
-            </form>
+        <div class="button-container button-footer" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="left-controls" style="display:flex; align-items:center; gap:0.5rem;">
+                <form asp-action="Index" method="get" class="filter-form" style="display:flex; align-items:center; gap:0.5rem; margin:0;">
+                    <input type="text" name="SearchString" class="search-input" placeholder="e.g Hexagonal" />
+                    <input type="submit" value="Filter" class="btn btn-grey" />
+                    <a asp-action="Index" class="btn btn-grey">Clear</a>
+                </form>
+            </div>
             <a asp-action="Create" class="btn btn-blue btn-create">Create New Tank</a>
         </div>
 

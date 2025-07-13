@@ -79,20 +79,25 @@ th.delete, td.delete {
     color: #fff;
 }
 
-.btn-blue {
-    background-color: #5CC1FF;
-}
-
 .btn-blue-var-1 {
     background-color: #C0EEF6
 }
+
 .btn-red {
     background-color: #dc3545;
+}
+
+.btn-blue {
+    background-color: #5CC1FF;
 }
 
 .btn-black {
     background-color: #000000;
     color: antiquewhite;
+}
+
+.btn-grey {
+    background-color: #cccccc;
 }
 
 .card-header {

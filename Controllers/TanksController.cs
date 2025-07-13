@@ -17,18 +17,50 @@ namespace VirtualAquariumManager.Controllers
 
         // GET: Tanks
         [Authorize]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string SearchString, int page = 1, int pageSize = 10)
         {
-            if (page < 1) page = 1;
+            if (page < 1)
+            {
+                page = 1;
+            }
 
-            var totalTanksCount = await _context.Tank.CountAsync();
+            var query = _context.Tank.Include(t => t.WaterQuality).AsQueryable();
 
-            var tanks = await _context.Tank
-                        .Include(t => t.WaterQuality)
-                        .OrderBy(t => t.CreatedDate)
-                        .Skip((page - 1) * pageSize)
-                        .Take(pageSize)
-                        .ToListAsync();
+            decimal? asDecimal = null;
+            if (decimal.TryParse(SearchString, out var dec))
+            {
+                asDecimal = dec;
+            }
+
+            DateTime? asDate = null;
+            if (DateTime.TryParse(SearchString, out var dt))
+            {
+                asDate = dt;
+            }
+
+            if (!string.IsNullOrWhiteSpace(SearchString))
+            {
+                SearchString = SearchString.Trim();
+                var pattern = $"%{SearchString}%";
+
+                query = query.Where(t =>
+                    EF.Functions.Like(t.Shape!, pattern)
+                    || EF.Functions.Like(t.WaterQuality!.WaterType!, pattern)
+                    || (asDecimal.HasValue && t.Size == asDecimal.Value)
+                    || (asDecimal.HasValue && t.WaterQuality.PhLevel == asDecimal.Value)
+                    || (asDecimal.HasValue && t.WaterQuality.AmmoniaLevel == asDecimal.Value)
+                    || (asDate.HasValue && t.CreatedDate.Date == asDate.Value.Date)
+                    || (asDate.HasValue && t.WaterQuality.CreatedDate.Date == asDate.Value.Date)
+                );
+            }
+
+            var tanks = await query
+                            .OrderBy(t => t.CreatedDate)
+                            .Skip((page - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToListAsync();
+
+            var totalTanksCount = await query.CountAsync();
 
             ViewBag.PageIndex = page;
             ViewBag.PageSize = pageSize;
