@@ -1,4 +1,4 @@
-﻿@model VirtualAquariumManager.Models.Tank
+﻿@model VirtualAquariumManager.ViewModels.TankWaterQualityData
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,7 +12,7 @@
     <form asp-action="Edit" class="form-grid">
         <div asp-validation-summary="ModelOnly" class="text-danger grid-full"></div>
 
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="TankId" />
 
         <!-- Tank fields -->
         <div class="form-field">
@@ -32,27 +32,27 @@
 
         <input type="hidden" asp-for="WaterQuality.Id" />
         <div class="form-field">
-            <label asp-for="WaterQuality.PhLevel"></label>
-            <input asp-for="WaterQuality.PhLevel" type="number" step="any" class="form-control" />
-            <span asp-validation-for="WaterQuality.PhLevel" class="text-danger"></span>
+            <label asp-for="PhLevel"></label>
+            <input asp-for="PhLevel" type="number" step="any" class="form-control" />
+            <span asp-validation-for="PhLevel" class="text-danger"></span>
         </div>
 
         <div class="form-field">
-            <label asp-for="WaterQuality.Temperature"></label>
-            <input asp-for="WaterQuality.Temperature" type="text" class="form-control" />
-            <span asp-validation-for="WaterQuality.Temperature" class="text-danger"></span>
+            <label asp-for="Temperature"></label>
+            <input asp-for="Temperature" type="text" class="form-control" />
+            <span asp-validation-for="Temperature" class="text-danger"></span>
         </div>
 
         <div class="form-field">
-            <label asp-for="WaterQuality.AmmoniaLevel"></label>
-            <input asp-for="WaterQuality.AmmoniaLevel" type="text" class="form-control" />
-            <span asp-validation-for="WaterQuality.AmmoniaLevel" class="text-danger"></span>
+            <label asp-for="AmmoniaLevel"></label>
+            <input asp-for="AmmoniaLevel" type="text" class="form-control" />
+            <span asp-validation-for="AmmoniaLevel" class="text-danger"></span>
         </div>
 
         <div class="form-field">
-            <label asp-for="WaterQuality.WaterType"></label>
-            <input asp-for="WaterQuality.WaterType" type="text" class="form-control" />
-            <span asp-validation-for="WaterQuality.WaterType" class="text-danger"></span>
+            <label asp-for="WaterType"></label>
+            <input asp-for="WaterType" type="text" class="form-control" />
+            <span asp-validation-for="WaterType" class="text-danger"></span>
         </div>
 
         <!-- Edit or Cancel -->

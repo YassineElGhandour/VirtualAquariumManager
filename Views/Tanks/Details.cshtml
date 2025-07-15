@@ -1,4 +1,4 @@
-﻿@model VirtualAquariumManager.Models.Tank
+﻿@model VirtualAquariumManager.ViewModels.TankWaterQualityData
 
 @{
     ViewData["Title"] = "Details";
@@ -11,33 +11,33 @@
 
     <div class="form-grid-3">
         <dl>
-            <dt>@Html.DisplayNameFor(m => m.Shape)</dt>
-            <dd>@Html.DisplayFor(m => m.Shape)</dd>
+            <dt>@Html.DisplayNameFor(twq => twq.Shape)</dt>
+            <dd>@Html.DisplayFor(twq => twq.Shape)</dd>
         </dl>
         <dl>
-            <dt>@Html.DisplayNameFor(m => m.Size)</dt>
-            <dd>@Html.DisplayFor(m => m.Size)</dd>
+            <dt>@Html.DisplayNameFor(twq => twq.Size)</dt>
+            <dd>@Html.DisplayFor(twq => twq.Size)</dd>
         </dl>
         <dl>
-            <dt>@Html.DisplayNameFor(m => m.WaterQuality.PhLevel)</dt>
-            <dd>@Html.DisplayFor(m => m.WaterQuality.PhLevel)</dd>
+            <dt>@Html.DisplayNameFor(twq => twq.PhLevel)</dt>
+            <dd>@Html.DisplayFor(twq => twq.PhLevel)</dd>
         </dl>
         <dl>
-            <dt>@Html.DisplayNameFor(m => m.WaterQuality.Temperature)</dt>
-            <dd>@Html.DisplayFor(m => m.WaterQuality.Temperature)</dd>
+            <dt>@Html.DisplayNameFor(twq => twq.Temperature)</dt>
+            <dd>@Html.DisplayFor(twq => twq.Temperature)</dd>
         </dl>
         <dl>
-            <dt>@Html.DisplayNameFor(m => m.WaterQuality.AmmoniaLevel)</dt>
-            <dd>@Html.DisplayFor(m => m.WaterQuality.AmmoniaLevel)</dd>
+            <dt>@Html.DisplayNameFor(twq => twq.AmmoniaLevel)</dt>
+            <dd>@Html.DisplayFor(twq => twq.AmmoniaLevel)</dd>
         </dl>
         <dl>
-            <dt>@Html.DisplayNameFor(m => m.WaterQuality.WaterType)</dt>
-            <dd>@Html.DisplayFor(m => m.WaterQuality.WaterType)</dd>
+            <dt>@Html.DisplayNameFor(twq => twq.WaterType)</dt>
+            <dd>@Html.DisplayFor(twq => twq.WaterType)</dd>
         </dl>
 
         <!-- actions span all three columns -->
         <div class="form-actions grid-full">
-            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-blue">Edit</a>
+            <a asp-action="Edit" asp-route-id="@Model?.TankId" class="btn btn-blue">Edit</a>
             <a asp-action="Index" class="btn btn-red">Cancel</a>
         </div>
     </div>

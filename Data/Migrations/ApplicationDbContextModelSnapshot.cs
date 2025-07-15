@@ -327,7 +327,6 @@ namespace VirtualAquariumManager.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("WaterType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

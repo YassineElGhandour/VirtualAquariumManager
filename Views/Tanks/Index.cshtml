@@ -1,4 +1,4 @@
-﻿@model IEnumerable<VirtualAquariumManager.Models.Tank>
+﻿@model IEnumerable<VirtualAquariumManager.ViewModels.TankWaterQualityData>
 
 @{
     ViewData["Title"] = "Tanks";
@@ -54,31 +54,30 @@
                 }
                 else
                 {
-                    @foreach (var tank in Model)
+                    @foreach (var tankWq in Model)
                     {
                         counter++;
-                        var wq = tank.WaterQuality;
                         <tr>
                             <td>@counter</td>
-                            <td>@tank.CreatedDate.ToString("yyyy")</td>
-                            <td>@tank.CreatedDate.ToString("HH:mm:ss")</td>
-                            <td>@tank.Shape</td>
-                            <td>@tank.Size</td>
-                            <td>@(wq?.WaterType ?? "—")</td>
-                            <td>@(wq != null ? wq.PhLevel : "—")</td>
-                            <td>@(wq != null ? wq.Temperature : "—")</td>
-                            <td>@(wq != null ? wq.AmmoniaLevel : "—")</td>
+                            <td>@tankWq.CreatedDate.ToString("yyyy")</td>
+                            <td>@tankWq.CreatedDate.ToString("HH:mm:ss")</td>
+                            <td>@tankWq.Shape</td>
+                            <td>@tankWq.Size</td>
+                            <td>@(tankWq?.WaterType ?? "—")</td>
+                            <td>@(tankWq != null ? tankWq.PhLevel : "—")</td>
+                            <td>@(tankWq != null ? tankWq.Temperature : "—")</td>
+                            <td>@(tankWq != null ? tankWq.AmmoniaLevel : "—")</td>
                             <td class="fish">
-                                <a asp-action="Edit" asp-route-id="@tank.Id" class="btn btn-green">Explore</a>
+                                <a asp-action="Edit" asp-route-id="@tankWq?.TankId" class="btn btn-green">Explore</a>
                             </td>
                             <td class="edit">
-                                <a asp-action="Edit" asp-route-id="@tank.Id" class="btn btn-blue">Edit</a>
+                                <a asp-action="Edit" asp-route-id="@tankWq?.TankId" class="btn btn-blue">Edit</a>
                             </td>
                             <td class="details">
-                                <a asp-action="Details" asp-route-id="@tank.Id" class="btn btn-blue">Details</a>
+                                <a asp-action="Details" asp-route-id="@tankWq?.TankId" class="btn btn-blue">Details</a>
                             </td>
                             <td class="delete">
-                                <a asp-action="Delete" asp-route-id="@tank.Id" class="btn btn-red">Delete</a>
+                                <a asp-action="Delete" asp-route-id="@tankWq?.TankId" class="btn btn-red">Delete</a>
                             </td>
                         </tr>
                     }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VirtualAquariumManager.Data;
 using VirtualAquariumManager.Models;
+using VirtualAquariumManager.ViewModels;
 
 namespace VirtualAquariumManager.Controllers
 {
@@ -26,7 +27,7 @@ namespace VirtualAquariumManager.Controllers
                 page = 1;
             }
 
-            var query = _context.Tank.Include(t => t.WaterQuality).AsQueryable();
+            var query = _context.Tank.AsQueryable();
 
             decimal? asDecimal = null;
             if (decimal.TryParse(SearchString, out var dec))
@@ -57,10 +58,22 @@ namespace VirtualAquariumManager.Controllers
             }
 
             var tanks = await query
-                            .OrderBy(t => t.CreatedDate)
-                            .Skip((page - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToListAsync();
+                        .OrderBy(t => t.CreatedDate)
+                        .Skip((page - 1) * pageSize)
+                        .Take(pageSize)
+                        .Select(t => new TankWaterQualityData
+                        {
+                            TankId = t.Id,
+                            Shape = t.Shape!,
+                            Size = t.Size,
+                            WaterQuality = t.WaterQuality!,
+                            PhLevel = t.WaterQuality!.PhLevel,
+                            Temperature = t.WaterQuality.Temperature,
+                            AmmoniaLevel = t.WaterQuality.AmmoniaLevel,
+                            WaterType = t.WaterQuality.WaterType,
+                            CreatedDate = t.CreatedDate
+                        })
+                        .ToListAsync();
 
             var totalTanksCount = await query.CountAsync();
 
@@ -81,8 +94,19 @@ namespace VirtualAquariumManager.Controllers
             }
 
             var tank = await _context.Tank
-                .Include(t => t.WaterQuality)
-                .FirstOrDefaultAsync(t => t.Id == id);
+                        .Select(t => new TankWaterQualityData
+                        {
+                            TankId = t.Id,
+                            Shape = t.Shape!,
+                            Size = t.Size,
+                            WaterQuality = t.WaterQuality!,
+                            PhLevel = t.WaterQuality!.PhLevel,
+                            Temperature = t.WaterQuality.Temperature,
+                            AmmoniaLevel = t.WaterQuality.AmmoniaLevel,
+                            WaterType = t.WaterQuality.WaterType,
+                            CreatedDate = t.CreatedDate
+                        })
+                        .FirstOrDefaultAsync(t => t.TankId == id);
 
             if (tank == null)
             {
@@ -127,8 +151,19 @@ namespace VirtualAquariumManager.Controllers
             }
 
             var tank = await _context.Tank
-                .Include(t => t.WaterQuality)
-                .FirstOrDefaultAsync(t => t.Id == id);
+                    .Select(t => new TankWaterQualityData
+                    {
+                        TankId = t.Id,
+                        Shape = t.Shape!,
+                        Size = t.Size,
+                        WaterQuality = t.WaterQuality!,
+                        PhLevel = t.WaterQuality!.PhLevel,
+                        Temperature = t.WaterQuality.Temperature,
+                        AmmoniaLevel = t.WaterQuality.AmmoniaLevel,
+                        WaterType = t.WaterQuality.WaterType,
+                        CreatedDate = t.CreatedDate
+                    })
+                    .FirstOrDefaultAsync(t => t.TankId == id);
 
             if (tank == null)
             {
@@ -143,37 +178,50 @@ namespace VirtualAquariumManager.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(Guid id, Tank tank)
+        public async Task<IActionResult> Edit(Guid id, TankWaterQualityData TankWaterQualityModal)
         {
-            if (id != tank.Id)
+            if (!ModelState.IsValid)
+            {
+                return View(TankWaterQualityModal);
+            }
+
+            var tank = await _context.Tank
+                        .Include(t => t.WaterQuality)
+                        .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (tank == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(tank);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TankExists(tank.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(
-                    nameof(Details),
-                    new { id = tank.Id }
-                );
+                tank.Shape = TankWaterQualityModal.Shape;
+                tank.Size = TankWaterQualityModal.Size;
+                tank.WaterQuality.PhLevel = TankWaterQualityModal.PhLevel;
+                tank.WaterQuality.Temperature = TankWaterQualityModal.Temperature;
+                tank.WaterQuality.AmmoniaLevel = TankWaterQualityModal.AmmoniaLevel;
+                tank.WaterQuality.WaterType = TankWaterQualityModal.WaterType;
+
+                _context.Update(tank);
+                await _context.SaveChangesAsync();
             }
-            return View(tank);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TankExists(TankWaterQualityModal.TankId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction(
+                nameof(Details),
+                new { id = TankWaterQualityModal.TankId }
+            );
         }
 
         // GET: Tanks/Delete/5
