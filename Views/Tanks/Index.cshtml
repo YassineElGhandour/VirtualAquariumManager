@@ -68,7 +68,7 @@
                             <td>@(tankWq != null ? tankWq.Temperature : "—")</td>
                             <td>@(tankWq != null ? tankWq.AmmoniaLevel : "—")</td>
                             <td class="fish">
-                                <a asp-action="Edit" asp-route-id="@tankWq?.TankId" class="btn btn-green">Explore</a>
+                                <a asp-action="ExploreFish" asp-route-id="@tankWq?.TankId" class="btn btn-green">Explore</a>
                             </td>
                             <td class="edit">
                                 <a asp-action="Edit" asp-route-id="@tankWq?.TankId" class="btn btn-blue">Edit</a>

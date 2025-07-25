@@ -6,8 +6,8 @@
         {
             Species = Species.Fish;
         }
-
-        public required Tank Tank { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public List<FishTank> FishTank { get; set; } = [];
         public FeedingTask? NextFeeding { get; set; }
         public List<FeedingTask>? FeedingTasks { get; set; } = [];
     }

@@ -224,6 +224,7 @@ namespace VirtualAquariumManager.Controllers
             );
         }
 
+
         // GET: Tanks/Delete/5
         [Authorize]
         public async Task<IActionResult> Delete(Guid? id)
@@ -257,6 +258,14 @@ namespace VirtualAquariumManager.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+
+        [HttpPost]
+        [Authorize]
+        public async void ExploreFish(Guid TankId)
+        {
+
         }
 
         private bool TankExists(Guid id)

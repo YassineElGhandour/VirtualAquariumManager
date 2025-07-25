@@ -11,5 +11,6 @@ namespace VirtualAquariumManager.Data
         {
         }
         public DbSet<VirtualAquariumManager.Models.Tank> Tank { get; set; } = default!;
+        public DbSet<VirtualAquariumManager.Models.Fish> Fish { get; set; } = default!;
     }
 }

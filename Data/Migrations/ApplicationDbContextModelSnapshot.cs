@@ -230,6 +230,9 @@ namespace VirtualAquariumManager.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("FeedingTaskId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("MaintenanceTaskId")
                         .HasColumnType("uniqueidentifier");
 
@@ -249,9 +252,108 @@ namespace VirtualAquariumManager.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FeedingTaskId");
+
                     b.HasIndex("MaintenanceTaskId");
 
                     b.ToTable("Alert");
+                });
+
+            modelBuilder.Entity("VirtualAquariumManager.Models.FeedingFrequency", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("NumberOfTimes")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnitOfFeeding")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FeedingFrequency");
+                });
+
+            modelBuilder.Entity("VirtualAquariumManager.Models.FeedingTask", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("FishId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("QuantityGrams")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FishId");
+
+                    b.ToTable("FeedingTask");
+                });
+
+            modelBuilder.Entity("VirtualAquariumManager.Models.Fish", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("FeedingFrequencyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("LifeSpan")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("NextFeedingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Species")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FeedingFrequencyId");
+
+                    b.HasIndex("NextFeedingId");
+
+                    b.ToTable("Fish");
+                });
+
+            modelBuilder.Entity("VirtualAquariumManager.Models.FishTank", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AssignedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FishId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TankId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FishId");
+
+                    b.HasIndex("TankId");
+
+                    b.ToTable("FishTank");
                 });
 
             modelBuilder.Entity("VirtualAquariumManager.Models.MaintenanceTask", b =>
@@ -387,9 +489,54 @@ namespace VirtualAquariumManager.Data.Migrations
 
             modelBuilder.Entity("VirtualAquariumManager.Models.Alert", b =>
                 {
+                    b.HasOne("VirtualAquariumManager.Models.FeedingTask", null)
+                        .WithMany("Alerts")
+                        .HasForeignKey("FeedingTaskId");
+
                     b.HasOne("VirtualAquariumManager.Models.MaintenanceTask", null)
                         .WithMany("Alerts")
                         .HasForeignKey("MaintenanceTaskId");
+                });
+
+            modelBuilder.Entity("VirtualAquariumManager.Models.FeedingTask", b =>
+                {
+                    b.HasOne("VirtualAquariumManager.Models.Fish", null)
+                        .WithMany("FeedingTasks")
+                        .HasForeignKey("FishId");
+                });
+
+            modelBuilder.Entity("VirtualAquariumManager.Models.Fish", b =>
+                {
+                    b.HasOne("VirtualAquariumManager.Models.FeedingFrequency", "FeedingFrequency")
+                        .WithMany()
+                        .HasForeignKey("FeedingFrequencyId");
+
+                    b.HasOne("VirtualAquariumManager.Models.FeedingTask", "NextFeeding")
+                        .WithMany()
+                        .HasForeignKey("NextFeedingId");
+
+                    b.Navigation("FeedingFrequency");
+
+                    b.Navigation("NextFeeding");
+                });
+
+            modelBuilder.Entity("VirtualAquariumManager.Models.FishTank", b =>
+                {
+                    b.HasOne("VirtualAquariumManager.Models.Fish", "Fish")
+                        .WithMany("FishTank")
+                        .HasForeignKey("FishId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VirtualAquariumManager.Models.Tank", "Tank")
+                        .WithMany("FishTank")
+                        .HasForeignKey("TankId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fish");
+
+                    b.Navigation("Tank");
                 });
 
             modelBuilder.Entity("VirtualAquariumManager.Models.MaintenanceTask", b =>
@@ -410,6 +557,18 @@ namespace VirtualAquariumManager.Data.Migrations
                     b.Navigation("WaterQuality");
                 });
 
+            modelBuilder.Entity("VirtualAquariumManager.Models.FeedingTask", b =>
+                {
+                    b.Navigation("Alerts");
+                });
+
+            modelBuilder.Entity("VirtualAquariumManager.Models.Fish", b =>
+                {
+                    b.Navigation("FeedingTasks");
+
+                    b.Navigation("FishTank");
+                });
+
             modelBuilder.Entity("VirtualAquariumManager.Models.MaintenanceTask", b =>
                 {
                     b.Navigation("Alerts");
@@ -417,6 +576,8 @@ namespace VirtualAquariumManager.Data.Migrations
 
             modelBuilder.Entity("VirtualAquariumManager.Models.Tank", b =>
                 {
+                    b.Navigation("FishTank");
+
                     b.Navigation("MaintenanceTasks");
                 });
 #pragma warning restore 612, 618
