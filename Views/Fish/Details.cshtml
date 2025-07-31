@@ -4,33 +4,32 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<div class="form-container">
+    <div class="card-header">
+        <h2>Fish details</h2>
+    </div>
 
-<div>
-    <h4>Fish</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Species)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Species)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LifeSpan)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LifeSpan)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="form-grid-3">
+        <dl>
+            <dt>@Html.DisplayNameFor(fish => fish.Name)</dt>
+            <dd>@Html.DisplayFor(fish => fish.Name)</dd>
+        </dl>
+        <dl>
+            <dt>@Html.DisplayNameFor(fish => fish.SubSpecies)</dt>
+            <dd>@Html.DisplayFor(fish => fish.SubSpecies)</dd>
+        </dl>
+        <dl>
+            <dt>@Html.DisplayNameFor(twq => twq.Species)</dt>
+            <dd>@Html.DisplayFor(twq => twq.Species)</dd>
+        </dl>
+        <dl>
+            <dt>@Html.DisplayNameFor(fish => fish.LifeSpan)</dt>
+            <dd>@Html.DisplayFor(fish => fish.LifeSpan)</dd>
+        </dl>
+
+        <div class="form-actions grid-full">
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-blue">Edit</a>
+            <a asp-action="Index" class="btn btn-red">Cancel</a>
+        </div>
+    </div>
 </div>

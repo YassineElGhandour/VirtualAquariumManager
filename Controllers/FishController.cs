@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using VirtualAquariumManager.Data;
 using VirtualAquariumManager.Models;
+using VirtualAquariumManager.ViewModels;
 
 namespace VirtualAquariumManager.Controllers
 {
@@ -20,12 +22,69 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Fish
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public async Task<IActionResult> Index(string SearchString, int page = 1, int pageSize = 10)
         {
-            return View(await _context.Fish.ToListAsync());
+            ViewBag.CurrentSearchString = SearchString;
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            var query = _context.Fish.AsQueryable();
+
+            int? asInt = null;
+            if (int.TryParse(SearchString, out var it))
+            {
+                asInt = it;
+            }
+
+            DateTime? asDate = null;
+            if (DateTime.TryParse(SearchString, out var dt))
+            {
+                asDate = dt;
+            }
+
+            if (!string.IsNullOrWhiteSpace(SearchString))
+            {
+                SearchString = SearchString.Trim();
+                var pattern = $"%{SearchString}%";
+
+                query = query.Where(fish =>
+                    EF.Functions.Like(fish.Name!, pattern)
+                    || EF.Functions.Like(fish.SubSpecies!, pattern)
+                    || (asInt.HasValue && fish.LifeSpan == asInt.Value)
+                    || (asDate.HasValue && fish.ImportedDate.Date == asDate.Value.Date)
+                );
+            }
+
+            var fish = await query
+                        .OrderBy(fish => fish.ImportedDate)
+                        .Skip((page - 1) * pageSize)
+                        .Take(pageSize)
+                        .Select(fish => new Fish
+                        {
+                            Id = fish.Id,
+                            Name = fish.Name!,
+                            SubSpecies = fish.SubSpecies!,
+                            LifeSpan = fish.LifeSpan,
+                            ImportedDate = fish.ImportedDate
+                        })
+                        .ToListAsync();
+
+            var totalfishCount = await query.CountAsync();
+
+            ViewBag.PageIndex = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalCount = totalfishCount;
+
+            return View(fish);
         }
 
         // GET: Fish/Details/5
+        [Authorize]
+
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -33,8 +92,8 @@ namespace VirtualAquariumManager.Controllers
                 return NotFound();
             }
 
-            var fish = await _context.Fish
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var fish = await _context.Fish.FirstOrDefaultAsync(fish => fish.Id == id);
+
             if (fish == null)
             {
                 return NotFound();
@@ -44,6 +103,8 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Fish/Create
+        [Authorize]
+
         public IActionResult Create()
         {
             return View();
@@ -54,7 +115,8 @@ namespace VirtualAquariumManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Species,LifeSpan")] Fish fish)
+        [Authorize]
+        public async Task<IActionResult> Create(Fish fish)
         {
             if (ModelState.IsValid)
             {
@@ -75,6 +137,7 @@ namespace VirtualAquariumManager.Controllers
             }
 
             var fish = await _context.Fish.FindAsync(id);
+
             if (fish == null)
             {
                 return NotFound();
@@ -87,6 +150,7 @@ namespace VirtualAquariumManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Species,LifeSpan")] Fish fish)
         {
             if (id != fish.Id)
@@ -118,6 +182,7 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Fish/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -138,6 +203,7 @@ namespace VirtualAquariumManager.Controllers
         // POST: Fish/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var fish = await _context.Fish.FindAsync(id);

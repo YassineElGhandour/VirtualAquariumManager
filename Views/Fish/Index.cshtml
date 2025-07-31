@@ -1,47 +1,79 @@
 ﻿@model IEnumerable<VirtualAquariumManager.Models.Fish>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Fish";
+    var pageIndex = (int)(ViewBag.PageIndex ?? 1);
+    var pageSize = (int)(ViewBag.PageSize ?? 10);
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+    var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+    var CurrentSearchString = (string)(ViewBag.CurrentSearchString);
+    var counter = (pageIndex - 1) * pageSize;
 }
 
-<h1>Index</h1>
+<div class="view-wrapper mx-4">
+    <div class="table-container">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Species)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LifeSpan)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Species)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LifeSpan)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        <div class="button-container button-footer" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="left-controls" style="display:flex; align-items:center; gap:0.5rem;">
+                <form asp-action="Index" method="get" class="filter-form" style="display:flex; align-items:center; gap:0.5rem; margin:0;">
+                    <input type="text" name="SearchString" class="search-input" placeholder="e.g Tuna" value="@CurrentSearchString" />
+                    <input type="submit" value="Filter" class="btn btn-grey" />
+                    <a asp-action="Index" class="btn btn-grey">Clear</a>
+                </form>
+            </div>
+            <a asp-action="Create" class="btn btn-blue btn-create">Create New Fish</a>
+        </div>
+
+        <hr class="section-divider" />
+
+        <table>
+            <caption class="table-caption">Alive fish</caption>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Sub Species</th>
+                    <th>Lifespan</th>
+                    <th>Imported Year</th>
+                    <th>Imported Date</th>
+                    <th class="edit">Edit</th>
+                    <th class="details">Details</th>
+                    <th class="delete">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="13" class="text-center">No fish are found in the this tank</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var fish in Model)
+                    {
+                        counter++;
+                        <tr>
+                            <td>@counter</td>
+                            <td>@fish.Name</td>
+                            <td>@fish.SubSpecies</td>
+                            <td>@fish.LifeSpan</td>
+                            <td>@fish.ImportedDate.ToString("yyyy")</td>
+                            <td>@fish.ImportedDate.ToString("HH:mm:ss")</td>
+                            <td class="edit">
+                                <a asp-action="Edit" asp-route-id="@fish?.Id" class="btn btn-blue">Edit</a>
+                            </td>
+                            <td class="details">
+                                <a asp-action="Details" asp-route-id="@fish?.Id" class="btn btn-blue">Details</a>
+                            </td>
+                            <td class="delete">
+                                <a asp-action="Delete" asp-route-id="@fish?.Id" class="btn btn-red">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>

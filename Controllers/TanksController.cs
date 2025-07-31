@@ -263,7 +263,7 @@ namespace VirtualAquariumManager.Controllers
 
         [HttpPost]
         [Authorize]
-        public async void ExploreFish(Guid TankId)
+        public void ExploreFish(Guid TankId)
         {
 
         }

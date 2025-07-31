@@ -310,6 +310,9 @@ namespace VirtualAquariumManager.Data.Migrations
                     b.Property<Guid?>("FeedingFrequencyId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("ImportedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("LifeSpan")
                         .HasColumnType("int");
 
@@ -322,6 +325,10 @@ namespace VirtualAquariumManager.Data.Migrations
 
                     b.Property<int>("Species")
                         .HasColumnType("int");
+
+                    b.Property<string>("SubSpecies")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
