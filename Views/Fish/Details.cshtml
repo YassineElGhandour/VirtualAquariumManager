@@ -28,8 +28,8 @@
         </dl>
 
         <div class="form-actions grid-full">
-            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-blue">Edit</a>
-            <a asp-action="Index" class="btn btn-red">Cancel</a>
+            <a asp-action="Edit" asp-route-id="@Model?.Id" asp-route-TankId="@Model?.TankId" class="btn btn-blue">Edit</a>
+            <a asp-action="Index" asp-route-TankId="@Model?.TankId" class="btn btn-black">Go Back</a>
         </div>
     </div>
 </div>

@@ -30,9 +30,10 @@
             <caption class="table-caption">Active Tanks</caption>
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Creation</th>
-                    <th>Time</th>
+                    <th class="eight-digit-col">#</th>
+                    <th>Tank ID</th>
+                    <th>Created Date</th>
+                    <th>Fish Count</th>
                     <th>Shape</th>
                     <th>Size (L)</th>
                     <th>Water Type</th>
@@ -58,9 +59,10 @@
                     {
                         counter++;
                         <tr>
-                            <td>@counter</td>
-                            <td>@tankWq.CreatedDate.ToString("yyyy")</td>
-                            <td>@tankWq.CreatedDate.ToString("HH:mm:ss")</td>
+                            <td class="eight-digit-col">@counter</td>
+                            <td>@tankWq.TankId</td>
+                            <td>@tankWq.CreatedDate.ToString("yyyy HH:mm")</td>
+                            <td>@tankWq.FishCount</td>
                             <td>@tankWq.Shape</td>
                             <td>@tankWq.Size</td>
                             <td>@(tankWq?.WaterType ?? "—")</td>
@@ -68,10 +70,10 @@
                             <td>@(tankWq != null ? tankWq.Temperature : "—")</td>
                             <td>@(tankWq != null ? tankWq.AmmoniaLevel : "—")</td>
                             <td class="fish">
-                                <a asp-action="ExploreFish" asp-route-id="@tankWq?.TankId" class="btn btn-green">Explore</a>
+                                <a asp-controller="Fish" asp-action="Index" asp-route-TankId="@tankWq?.TankId" class="btn btn-green">Explore</a>
                             </td>
                             <td class="edit">
-                                <a asp-action="Edit" asp-route-id="@tankWq?.TankId" class="btn btn-blue">Edit</a>
+                                <a asp-action="Edit" asp-route-TankId="@tankWq?.TankId" class="btn btn-blue">Edit</a>
                             </td>
                             <td class="details">
                                 <a asp-action="Details" asp-route-id="@tankWq?.TankId" class="btn btn-blue">Details</a>

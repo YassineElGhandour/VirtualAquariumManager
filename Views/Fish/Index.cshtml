@@ -2,12 +2,13 @@
 
 @{
     ViewData["Title"] = "Fish";
-    var pageIndex = (int)(ViewBag.PageIndex ?? 1);
-    var pageSize = (int)(ViewBag.PageSize ?? 10);
-    var totalCount = (int)(ViewBag.TotalCount ?? 0);
-    var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+    var pageIndex = (int) (ViewBag.PageIndex ?? 1);
+    var pageSize = (int) (ViewBag.PageSize ?? 10);
+    var totalCount = (int) (ViewBag.TotalCount ?? 0);
+    var totalPages = (int) Math.Ceiling((double)totalCount / pageSize);
     var CurrentSearchString = (string)(ViewBag.CurrentSearchString);
     var counter = (pageIndex - 1) * pageSize;
+    var TankId = (Guid?)ViewBag.TankId;
 }
 
 <div class="view-wrapper mx-4">
@@ -16,18 +17,19 @@
         <div class="button-container button-footer" style="display:flex; justify-content:space-between; align-items:center;">
             <div class="left-controls" style="display:flex; align-items:center; gap:0.5rem;">
                 <form asp-action="Index" method="get" class="filter-form" style="display:flex; align-items:center; gap:0.5rem; margin:0;">
+                    <input type="hidden" name="TankId" value="@ViewBag.TankId" />
                     <input type="text" name="SearchString" class="search-input" placeholder="e.g Tuna" value="@CurrentSearchString" />
                     <input type="submit" value="Filter" class="btn btn-grey" />
-                    <a asp-action="Index" class="btn btn-grey">Clear</a>
+                    <a asp-action="Index" asp-route-TankId="@TankId" class="btn btn-grey">Clear</a>
                 </form>
             </div>
-            <a asp-action="Create" class="btn btn-blue btn-create">Create New Fish</a>
+            <a asp-action="Create" asp-route-TankId="@(TankId!)" class="btn btn-blue btn-create"> Create New Fish </a>
         </div>
 
         <hr class="section-divider" />
 
         <table>
-            <caption class="table-caption">Alive fish</caption>
+            <caption class="table-caption">Fish in @TankId</caption>
             <thead>
                 <tr>
                     <th>#</th>
@@ -61,13 +63,13 @@
                             <td>@fish.ImportedDate.ToString("yyyy")</td>
                             <td>@fish.ImportedDate.ToString("HH:mm:ss")</td>
                             <td class="edit">
-                                <a asp-action="Edit" asp-route-id="@fish?.Id" class="btn btn-blue">Edit</a>
+                                <a asp-action="Edit" asp-route-id="@fish?.Id" asp-route-TankId="@TankId" class="btn btn-blue">Edit</a>
                             </td>
                             <td class="details">
-                                <a asp-action="Details" asp-route-id="@fish?.Id" class="btn btn-blue">Details</a>
+                                <a asp-action="Details" asp-route-id="@fish?.Id" asp-route-TankId="@TankId" class="btn btn-blue">Details</a>
                             </td>
                             <td class="delete">
-                                <a asp-action="Delete" asp-route-id="@fish?.Id" class="btn btn-red">Delete</a>
+                                <a asp-action="Delete" asp-route-id="@fish?.Id" asp-route-TankId="@TankId" class="btn btn-red">Delete</a>
                             </td>
                         </tr>
                     }

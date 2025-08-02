@@ -71,7 +71,8 @@ namespace VirtualAquariumManager.Controllers
                             Temperature = t.WaterQuality.Temperature,
                             AmmoniaLevel = t.WaterQuality.AmmoniaLevel,
                             WaterType = t.WaterQuality.WaterType,
-                            CreatedDate = t.CreatedDate
+                            CreatedDate = t.CreatedDate,
+                            FishCount = t.Fish!.Count
                         })
                         .ToListAsync();
 
@@ -123,9 +124,6 @@ namespace VirtualAquariumManager.Controllers
             return View();
         }
 
-        // POST: Tanks/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -172,9 +170,6 @@ namespace VirtualAquariumManager.Controllers
             return View(tank);
         }
 
-        // POST: Tanks/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -224,7 +219,6 @@ namespace VirtualAquariumManager.Controllers
             );
         }
 
-
         // GET: Tanks/Delete/5
         [Authorize]
         public async Task<IActionResult> Delete(Guid? id)
@@ -258,14 +252,6 @@ namespace VirtualAquariumManager.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-
-        [HttpPost]
-        [Authorize]
-        public void ExploreFish(Guid TankId)
-        {
-
         }
 
         private bool TankExists(Guid id)

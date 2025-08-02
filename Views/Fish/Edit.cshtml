@@ -33,10 +33,12 @@
             <span asp-validation-for="LifeSpan" class="text-danger"></span>
         </div>
 
+        <input asp-for="TankId" type="hidden" />
+
         <!-- Edit or Cancel -->
         <div class="form-actions grid-full">
             <button type="submit" value="Edit" class="btn btn-blue">Edit</button>
-            <a asp-action="Index" class="btn btn-red">Cancel</a>
+            <a asp-action="Index" asp-route-TankId="@Model?.TankId" class="btn btn-red">Cancel</a>
         </div>
 
     </form>

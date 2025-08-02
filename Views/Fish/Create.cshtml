@@ -39,10 +39,12 @@
             <span asp-validation-for="ImportedDate" class="text-danger"></span>
         </div>
 
+        <input asp-for="TankId" type="hidden" />
+
         <!-- Create or Cancel -->
         <div class="form-actions grid-full">
             <button type="submit" class="btn btn-blue">Create</button>
-            <a asp-action="Index" class="btn btn-red">Cancel</a>
+            <a asp-action="Index" asp-route-TankId="@Model.TankId" class="btn btn-red">Cancel</a>
         </div>
     </form>
 </div>

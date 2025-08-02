@@ -330,37 +330,18 @@ namespace VirtualAquariumManager.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("TankId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("FeedingFrequencyId");
 
                     b.HasIndex("NextFeedingId");
 
-                    b.ToTable("Fish");
-                });
-
-            modelBuilder.Entity("VirtualAquariumManager.Models.FishTank", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("AssignedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("FishId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TankId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FishId");
-
                     b.HasIndex("TankId");
 
-                    b.ToTable("FishTank");
+                    b.ToTable("Fish");
                 });
 
             modelBuilder.Entity("VirtualAquariumManager.Models.MaintenanceTask", b =>
@@ -522,26 +503,13 @@ namespace VirtualAquariumManager.Data.Migrations
                         .WithMany()
                         .HasForeignKey("NextFeedingId");
 
+                    b.HasOne("VirtualAquariumManager.Models.Tank", "Tank")
+                        .WithMany("Fish")
+                        .HasForeignKey("TankId");
+
                     b.Navigation("FeedingFrequency");
 
                     b.Navigation("NextFeeding");
-                });
-
-            modelBuilder.Entity("VirtualAquariumManager.Models.FishTank", b =>
-                {
-                    b.HasOne("VirtualAquariumManager.Models.Fish", "Fish")
-                        .WithMany("FishTank")
-                        .HasForeignKey("FishId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("VirtualAquariumManager.Models.Tank", "Tank")
-                        .WithMany("FishTank")
-                        .HasForeignKey("TankId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Fish");
 
                     b.Navigation("Tank");
                 });
@@ -572,8 +540,6 @@ namespace VirtualAquariumManager.Data.Migrations
             modelBuilder.Entity("VirtualAquariumManager.Models.Fish", b =>
                 {
                     b.Navigation("FeedingTasks");
-
-                    b.Navigation("FishTank");
                 });
 
             modelBuilder.Entity("VirtualAquariumManager.Models.MaintenanceTask", b =>
@@ -583,7 +549,7 @@ namespace VirtualAquariumManager.Data.Migrations
 
             modelBuilder.Entity("VirtualAquariumManager.Models.Tank", b =>
                 {
-                    b.Navigation("FishTank");
+                    b.Navigation("Fish");
 
                     b.Navigation("MaintenanceTasks");
                 });
