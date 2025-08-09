@@ -26,6 +26,10 @@
             <dt>@Html.DisplayNameFor(fish => fish.LifeSpan)</dt>
             <dd>@Html.DisplayFor(fish => fish.LifeSpan)</dd>
         </dl>
+        <dl>
+            <dt>@Html.DisplayNameFor(fish => fish.ImportedDate)</dt>
+            <dd>@Html.DisplayFor(fish => fish.ImportedDate)</dd>
+        </dl>
 
         <div class="form-actions grid-full">
             <a asp-action="Edit" asp-route-id="@Model?.Id" asp-route-TankId="@Model?.TankId" class="btn btn-blue">Edit</a>

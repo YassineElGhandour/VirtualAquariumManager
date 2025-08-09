@@ -33,6 +33,12 @@
             <span asp-validation-for="LifeSpan" class="text-danger"></span>
         </div>
 
+        <div class="form-field">
+            <label asp-for="ImportedDate"></label>
+            <input asp-for="ImportedDate" type="date" class="form-control" />
+            <span asp-validation-for="ImportedDate" class="text-danger"></span>
+        </div>
+
         <input asp-for="TankId" type="hidden" />
 
         <!-- Edit or Cancel -->

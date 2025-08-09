@@ -32,7 +32,7 @@
             <caption class="table-caption">Fish in @TankId</caption>
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th class="eight-digit-col">#</th>
                     <th>Name</th>
                     <th>Sub Species</th>
                     <th>Lifespan</th>
@@ -47,7 +47,7 @@
                 @if (!Model.Any())
                 {
                     <tr>
-                        <td colspan="13" class="text-center">No fish are found in the this tank</td>
+                        <td colspan="9" class="text-center">No fish are found in the this tank</td>
                     </tr>
                 }
                 else
@@ -56,12 +56,12 @@
                     {
                         counter++;
                         <tr>
-                            <td>@counter</td>
+                            <td class="eight-digit-col">@counter</td>
                             <td>@fish.Name</td>
                             <td>@fish.SubSpecies</td>
                             <td>@fish.LifeSpan</td>
                             <td>@fish.ImportedDate.ToString("yyyy")</td>
-                            <td>@fish.ImportedDate.ToString("HH:mm:ss")</td>
+                            <td>@fish.ImportedDate.ToString("MM:dd")</td>
                             <td class="edit">
                                 <a asp-action="Edit" asp-route-id="@fish?.Id" asp-route-TankId="@TankId" class="btn btn-blue">Edit</a>
                             </td>
