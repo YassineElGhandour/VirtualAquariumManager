@@ -10,7 +10,7 @@
     public abstract class Animal
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public required string Name { get; set; }
+        public string? Name { get; set; }
         public Species Species { get; protected set; }
         public int LifeSpan { get; set; }
         public FeedingFrequency? FeedingFrequency { get; set; }

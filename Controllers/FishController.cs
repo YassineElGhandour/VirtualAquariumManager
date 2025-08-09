@@ -6,6 +6,7 @@ using VirtualAquariumManager.Models;
 
 namespace VirtualAquariumManager.Controllers
 {
+    [Authorize]
     public class FishController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -16,7 +17,6 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Fish?TankId=guid
-        [Authorize]
         public async Task<IActionResult> Index(Guid? TankId, string SearchString, int page = 1, int pageSize = 10)
         {            
             page = page < 1 ? 1 : page;
@@ -85,7 +85,6 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Fish/Details/5
-        [Authorize]
 
         public async Task<IActionResult> Details(Guid? id, Guid? TankId)
         {
@@ -105,16 +104,11 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Fish/Create
-        [Authorize]
         public IActionResult Create(Guid? TankId)
         {
-            var Tank = _context.Tank.FirstOrDefault(t => t.Id == TankId);
-            Fish fish = new()
+            Fish fish = new ()
             {
-                Name = string.Empty,
-                SubSpecies = string.Empty,
                 TankId = TankId,
-                Tank = Tank!,
                 ImportedDate = DateTime.Now
             };
             return View(fish);
@@ -122,17 +116,15 @@ namespace VirtualAquariumManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> Create(Fish fish)
         {
-            if (ModelState.IsValid)
-            {
-                fish.Id = Guid.NewGuid();
-                _context.Add(fish);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { fish.TankId });
-            }
-            return View(fish);
+            if (fish == null) return NotFound();
+            if (!ModelState.IsValid) return View(fish);
+
+            fish.Id = Guid.NewGuid();
+            _context.Add(fish);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index), new { fish.TankId });
         }
 
         // GET: Fish/Edit/5
@@ -154,39 +146,26 @@ namespace VirtualAquariumManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> Edit(Guid id, Fish fish)
         {
-            if (id != fish.Id)
+            if (fish == null || id != fish.Id) return NotFound();
+            if (!ModelState.IsValid) return View(fish);
+
+            try
             {
-                return NotFound();
+                _context.Update(fish);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!FishExists(fish.Id)) return NotFound();
+                throw;
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(fish);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FishExists(fish.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index), new { fish.TankId });
-            }
-            return View(fish);
+            return RedirectToAction(nameof(Index), new { TankId = fish.TankId });
         }
 
         // GET: Fish/Delete/5
-        [Authorize]
         public async Task<IActionResult> Delete(Guid? id, Guid? TankId)
         {
             if (id == null || TankId == null)
@@ -206,23 +185,18 @@ namespace VirtualAquariumManager.Controllers
         // POST: Fish/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var fish = await _context.Fish.FindAsync(id);
-            Guid TankId = (Guid)fish.TankId;
-
-            if (fish != null)
-            {
-                _context.Fish.Remove(fish);
-            } 
-            else
-            {
+            if (fish == null)
                 return NotFound();
-            }
 
+            var tankId = fish.TankId;
+
+            _context.Fish.Remove(fish);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { TankId });
+
+            return RedirectToAction(nameof(Index), new { TankId = tankId });
         }
 
         private bool FishExists(Guid id)

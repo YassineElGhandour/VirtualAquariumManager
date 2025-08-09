@@ -317,7 +317,6 @@ namespace VirtualAquariumManager.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("NextFeedingId")
@@ -327,7 +326,6 @@ namespace VirtualAquariumManager.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SubSpecies")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("TankId")

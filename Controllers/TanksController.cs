@@ -7,6 +7,7 @@ using VirtualAquariumManager.ViewModels;
 
 namespace VirtualAquariumManager.Controllers
 {
+    [Authorize]
     public class TanksController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -17,16 +18,10 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Tanks
-        [Authorize]
         public async Task<IActionResult> Index(string SearchString, int page = 1, int pageSize = 10)
         {
-            ViewBag.CurrentSearchString = SearchString;
+            page = page < 1 ? 1 : page;
             
-            if (page < 1)
-            {
-                page = 1;
-            }
-
             var query = _context.Tank.AsQueryable();
 
             decimal? asDecimal = null;
@@ -75,9 +70,9 @@ namespace VirtualAquariumManager.Controllers
                             FishCount = t.Fish!.Count
                         })
                         .ToListAsync();
-
             var totalTanksCount = await query.CountAsync();
 
+            ViewBag.CurrentSearchString = SearchString;
             ViewBag.PageIndex = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalCount = totalTanksCount;
@@ -86,7 +81,6 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Tanks/Details/5
-        [Authorize]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -118,7 +112,6 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Tanks/Create
-        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -126,7 +119,6 @@ namespace VirtualAquariumManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> Create(Tank tank)
         {
             if (ModelState.IsValid)
@@ -140,7 +132,6 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Tanks/Edit/5
-        [Authorize]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -172,7 +163,6 @@ namespace VirtualAquariumManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> Edit(Guid id, TankWaterQualityData TankWaterQualityModal)
         {
             if (!ModelState.IsValid)
@@ -220,7 +210,6 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Tanks/Delete/5
-        [Authorize]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -241,7 +230,6 @@ namespace VirtualAquariumManager.Controllers
         // POST: Tanks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var tank = await _context.Tank.FindAsync(id);

@@ -1,6 +1,6 @@
 ﻿namespace VirtualAquariumManager.Models
 {
-    public class FeedingTask : Task
+    public class FeedingTask : AquariumTask
     {
         public decimal QuantityGrams { get; set; }
     }
