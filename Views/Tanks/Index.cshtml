@@ -2,21 +2,21 @@
 
 @{
     ViewData["Title"] = "Tanks";
-    var pageIndex = (int) (ViewBag.PageIndex ?? 1);
-    var pageSize = (int) (ViewBag.PageSize ?? 10);
-    var totalCount = (int) (ViewBag.TotalCount ?? 0);
-    var totalPages = (int) Math.Ceiling((double)totalCount / pageSize);
-    var CurrentSearchString = (string) (ViewBag.CurrentSearchString);
+    var pageIndex = (int)(ViewBag.PageIndex ?? 1);
+    var pageSize = (int)(ViewBag.PageSize ?? 10);
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+    var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+    var CurrentSearchString = (string)(ViewBag.CurrentSearchString);
     var counter = (pageIndex - 1) * pageSize;
 }
 
 <div class="view-wrapper mx-4">
     <div class="table-container">
 
-        <div class="button-container button-footer" style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="left-controls" style="display:flex; align-items:center; gap:0.5rem;">
-                <form asp-action="Index" method="get" class="filter-form" style="display:flex; align-items:center; gap:0.5rem; margin:0;">
-                    <input type="text" name="SearchString" class="search-input" placeholder="e.g Hexagonal" value="@CurrentSearchString" />
+        <div class="button-container button-footer">
+            <div class="left-controls">
+                <form asp-action="Index" method="get" class="filter-form">
+                    <input type="text" name="SearchString" class="search-input" placeholder="e.g Hexagonal, Oval" value="@CurrentSearchString" />
                     <input type="submit" value="Filter" class="btn btn-grey" />
                     <a asp-action="Index" class="btn btn-grey">Clear</a>
                 </form>
@@ -31,16 +31,15 @@
             <thead>
                 <tr>
                     <th class="eight-digit-col">#</th>
-                    <th>Tank ID</th>
-                    <th>Created Date</th>
-                    <th>Fish Count</th>
                     <th>Shape</th>
                     <th>Size (L)</th>
                     <th>Water Type</th>
                     <th>pH</th>
                     <th>Temp (°C)</th>
                     <th>Ammonia (ppm)</th>
+                    <th>Fish Count</th>
                     <th class="fish">Fish</th>
+                    <th class="fish">Tasks</th>
                     <th class="edit">Edit</th>
                     <th class="details">Details</th>
                     <th class="delete">Delete</th>
@@ -60,20 +59,21 @@
                         counter++;
                         <tr>
                             <td class="eight-digit-col">@counter</td>
-                            <td>@tankWq.TankId</td>
-                            <td>@tankWq.CreatedDate.ToString("yyyy HH:mm")</td>
-                            <td>@tankWq.FishCount</td>
                             <td>@tankWq.Shape</td>
                             <td>@tankWq.Size</td>
                             <td>@(tankWq?.WaterType ?? "—")</td>
                             <td>@(tankWq != null ? tankWq.PhLevel : "—")</td>
                             <td>@(tankWq != null ? tankWq.Temperature : "—")</td>
                             <td>@(tankWq != null ? tankWq.AmmoniaLevel : "—")</td>
+                            <td>@tankWq?.FishCount</td>
                             <td class="fish">
                                 <a asp-controller="Fish" asp-action="Index" asp-route-TankId="@tankWq?.TankId" class="btn btn-green">Explore</a>
                             </td>
+                            <td class="fish">
+                                <a asp-controller="MaintenanceTasks" asp-action="Index" asp-route-TankId="@tankWq?.TankId" class="btn btn-green">Manage</a>
+                            </td>
                             <td class="edit">
-                                <a asp-action="Edit" asp-route-TankId="@tankWq?.TankId" class="btn btn-blue">Edit</a>
+                                <a asp-action="Edit" asp-route-id="@tankWq?.TankId" class="btn btn-blue">Edit</a>
                             </td>
                             <td class="details">
                                 <a asp-action="Details" asp-route-id="@tankWq?.TankId" class="btn btn-blue">Details</a>

@@ -2,10 +2,10 @@
 
 @{
     ViewData["Title"] = "Fish";
-    var pageIndex = (int) (ViewBag.PageIndex ?? 1);
-    var pageSize = (int) (ViewBag.PageSize ?? 10);
-    var totalCount = (int) (ViewBag.TotalCount ?? 0);
-    var totalPages = (int) Math.Ceiling((double)totalCount / pageSize);
+    var pageIndex = (int)(ViewBag.PageIndex ?? 1);
+    var pageSize = (int)(ViewBag.PageSize ?? 10);
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+    var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
     var CurrentSearchString = (string)(ViewBag.CurrentSearchString);
     var counter = (pageIndex - 1) * pageSize;
     var TankId = (Guid?)ViewBag.TankId;
@@ -14,9 +14,9 @@
 <div class="view-wrapper mx-4">
     <div class="table-container">
 
-        <div class="button-container button-footer" style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="left-controls" style="display:flex; align-items:center; gap:0.5rem;">
-                <form asp-action="Index" method="get" class="filter-form" style="display:flex; align-items:center; gap:0.5rem; margin:0;">
+        <div class="button-container button-footer">
+            <div class="left-controls">
+                <form asp-action="Index" method="get" class="filter-form">
                     <input type="hidden" name="TankId" value="@ViewBag.TankId" />
                     <input type="text" name="SearchString" class="search-input" placeholder="e.g Tuna" value="@CurrentSearchString" />
                     <input type="submit" value="Filter" class="btn btn-grey" />
@@ -29,14 +29,13 @@
         <hr class="section-divider" />
 
         <table>
-            <caption class="table-caption">Fish in @TankId</caption>
+            <caption class="table-caption">All Fish</caption>
             <thead>
                 <tr>
                     <th class="eight-digit-col">#</th>
                     <th>Name</th>
                     <th>Sub Species</th>
                     <th>Lifespan</th>
-                    <th>Imported Year</th>
                     <th>Imported Date</th>
                     <th class="edit">Edit</th>
                     <th class="details">Details</th>
@@ -47,7 +46,7 @@
                 @if (!Model.Any())
                 {
                     <tr>
-                        <td colspan="9" class="text-center">No fish are found in the this tank</td>
+                        <td colspan="8" class="text-center">No fish are found in the this tank</td>
                     </tr>
                 }
                 else
@@ -60,8 +59,7 @@
                             <td>@fish.Name</td>
                             <td>@fish.SubSpecies</td>
                             <td>@fish.LifeSpan</td>
-                            <td>@fish.ImportedDate.ToString("yyyy")</td>
-                            <td>@fish.ImportedDate.ToString("MM:dd")</td>
+                            <td>@fish.ImportedDate.ToString("yyyy-MM-dd")</td>
                             <td class="edit">
                                 <a asp-action="Edit" asp-route-id="@fish?.Id" asp-route-TankId="@TankId" class="btn btn-blue">Edit</a>
                             </td>

@@ -1,0 +1,93 @@
+﻿@model IEnumerable<VirtualAquariumManager.Models.MaintenanceTask>
+
+@{
+    ViewData["Title"] = "Tasks";
+    var pageIndex = (int)(ViewBag.PageIndex ?? 1);
+    var pageSize = (int)(ViewBag.PageSize ?? 10);
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+    var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+    var CurrentSearchString = (string)(ViewBag.CurrentSearchString);
+    var counter = (pageIndex - 1) * pageSize;
+}
+
+<div class="view-wrapper mx-4">
+    <div class="table-container">
+
+        <div class="button-container button-footer">
+            <div class="left-controls">
+                <form asp-action="Index" method="get" class="filter-form">
+                    <input type="text" name="SearchString" class="search-input" placeholder="e.g. Water change, Filter clean" value="@CurrentSearchString" />
+                    <input type="submit" value="Filter" class="btn btn-grey" />
+                    <a asp-action="Index" class="btn btn-grey">Clear</a>
+                </form>
+            </div>
+            <a asp-action="Create" class="btn btn-blue btn-create">Create New Task</a>
+        </div>
+
+        <hr class="section-divider" />
+
+        <table>
+            <caption class="table-caption">Maintenance Tasks</caption>
+            <thead>
+                <tr>
+                    <th class="eight-digit-col">#</th>
+                    <th>Type</th>
+                    <th>Performed On</th>
+                    <th>Due Date</th>
+                    <th>Completed</th>
+                    <th class="edit">Edit</th>
+                    <th class="details">Details</th>
+                    <th class="delete">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!(Model?.Any() ?? false))
+                {
+                    <tr>
+                        <td colspan="8" class="text-center">No tasks found</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var task in Model)
+                    {
+                        counter++;
+                        <tr>
+                            <td class="eight-digit-col">@counter</td>
+                            <td>@task.Type</td>
+                            <td>@task.PerformedOn.ToString("yyyy-MM-dd")</td>
+                            <td>@task.DueDate.ToString("yyyy-MM-dd")</td>
+                            <td>@(task.IsCompleted ? "Yes" : "No")</td>
+                            <td class="edit">
+                                <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-blue">Edit</a>
+                            </td>
+                            <td class="details">
+                                <a asp-action="Details" asp-route-id="@task.Id" class="btn btn-blue">Details</a>
+                            </td>
+                            <td class="delete">
+                                <a asp-action="Delete" asp-route-id="@task.Id" class="btn btn-red">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            @if (pageIndex > 1)
+            {
+                <a asp-action="Index" asp-route-page="@(pageIndex - 1)" asp-route-SearchString="@CurrentSearchString">« Prev</a>
+            }
+            @for (var i = 1; i <= totalPages; i++)
+            {
+                var cls = i == pageIndex ? "current" : "";
+                <a asp-action="Index" asp-route-page="@i" asp-route-SearchString="@CurrentSearchString" class="@cls">@i</a>
+            }
+            @if (pageIndex < totalPages)
+            {
+                <a asp-action="Index" asp-route-page="@(pageIndex + 1)" asp-route-SearchString="@CurrentSearchString">Next »</a>
+            }
+        </div>
+
+    </div>
+</div>
