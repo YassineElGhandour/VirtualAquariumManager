@@ -11,84 +11,81 @@ namespace VirtualAquariumManager.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public FishController(ApplicationDbContext context)
+        public FishController(ApplicationDbContext Context)
         {
-            _context = context;
+            _context = Context;
         }
 
         // GET: Fish?TankId=guid
-        public async Task<IActionResult> Index(Guid? TankId, string SearchString, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(Guid? TankId, string SearchString, int Page = 1, int PageSize = 10)
         {
-            if (page < 1) page = 1;
+            if (Page < 1) Page = 1;
 
-            var query = _context.Fish.AsQueryable();
-
+            var Query = _context.Fish.AsQueryable();
             if (TankId.HasValue)
             {
-                query = query.Where(f => f.TankId == TankId);
+                Query = Query.Where(f => f.TankId == TankId);
             } else
             {
                 return NotFound();
             }
 
-            int? asInt = null;
-            if (int.TryParse(SearchString, out var it)) asInt = it;
+            int? AsInt = null;
+            if (int.TryParse(SearchString, out var it)) AsInt = it;
             
-            DateTime? asDate = null;
-            if (DateTime.TryParse(SearchString, out var dt)) asDate = dt;
+            DateTime? AsDate = null;
+            if (DateTime.TryParse(SearchString, out var dt)) AsDate = dt;
 
             if (!string.IsNullOrWhiteSpace(SearchString))
             {
                 SearchString = SearchString.Trim();
-                var pattern = $"%{SearchString}%";
+                var Pattern = $"%{SearchString}%";
 
-                query = query.Where(fish =>
-                    EF.Functions.Like(fish.Name!, pattern)
-                    || EF.Functions.Like(fish.SubSpecies!, pattern)
-                    || (asInt.HasValue && fish.LifeSpan == asInt.Value)
-                    || (asDate.HasValue && fish.ImportedDate.Date == asDate.Value.Date)
+                Query = Query.Where(Fish =>
+                    EF.Functions.Like(Fish.Name!, Pattern)
+                    || EF.Functions.Like(Fish.SubSpecies!, Pattern)
+                    || (AsInt.HasValue && Fish.LifeSpan == AsInt.Value)
+                    || (AsDate.HasValue && Fish.ImportedDate.Date == AsDate.Value.Date)
                 );
             }
 
             var Tank = await _context.Tank.FirstOrDefaultAsync(t => t.Id == TankId);
-            var fish = await query
-                        .OrderBy(fish => fish.ImportedDate)
-                        .Skip((page - 1) * pageSize)
-                        .Take(pageSize)
-                        .Select(fish => new Fish
+            var Fish = await Query
+                        .OrderBy(Fish => Fish.ImportedDate)
+                        .Skip((Page - 1) * PageSize)
+                        .Take(PageSize)
+                        .Select(Fish => new Fish
                         {
-                            Id = fish.Id,
-                            TankId = fish.TankId,
+                            Id = Fish.Id,
+                            TankId = Fish.TankId,
                             Tank = Tank!,
-                            Name = fish.Name!,
-                            SubSpecies = fish.SubSpecies!,
-                            LifeSpan = fish.LifeSpan,
-                            ImportedDate = fish.ImportedDate
+                            Name = Fish.Name!,
+                            SubSpecies = Fish.SubSpecies!,
+                            LifeSpan = Fish.LifeSpan,
+                            ImportedDate = Fish.ImportedDate
                         })
                         .ToListAsync();
-            var totalfishCount = await query.CountAsync();
+            var TotalfishCount = await Query.CountAsync();
 
             // Prepare ViewBag for usage in Index.cshtml
             ViewBag.CurrentSearchString = SearchString;
             ViewBag.TankId = TankId;
-            ViewBag.PageIndex = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = totalfishCount;
+            ViewBag.PageIndex = Page;
+            ViewBag.PageSize = PageSize;
+            ViewBag.TotalCount = TotalfishCount;
 
-            return View(fish);
+            return View(Fish);
         }
 
         // GET: Fish/Details/5
-
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid? Id)
         {
-            if (id == null) return NotFound();
-            
+            if (Id == null) return NotFound();
 
-            var fish = await _context.Fish.FirstOrDefaultAsync(fish => fish.Id == id);
-            if (fish == null) return NotFound();
+            var Fish = await _context.Fish.FirstOrDefaultAsync(fish => fish.Id == Id);
+            if (Fish == null) return NotFound();
             
-            return View(fish);
+            return View(Fish);
         }
 
         // GET: Fish/Create
@@ -96,33 +93,33 @@ namespace VirtualAquariumManager.Controllers
         {
             if (TankId == Guid.Empty) return NotFound();
             
-            Fish fish = new ()
+            Fish Fish = new ()
             {
                 TankId = TankId,
                 ImportedDate = DateTime.Now
             };
-            return View(fish);
+            return View(Fish);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Fish fish)
+        public async Task<IActionResult> Create(Fish Fish)
         {
-            if (fish == null) return NotFound();
-            if (!ModelState.IsValid) return View(fish);
+            if (Fish == null) return NotFound();
+            if (!ModelState.IsValid) return View(Fish);
 
-            fish.Id = Guid.NewGuid();
-            _context.Add(fish);
+            Fish.Id = Guid.NewGuid();
+            _context.Add(Fish);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { fish.TankId });
+            return RedirectToAction(nameof(Index), new { Fish.TankId });
         }
 
         // GET: Fish/Edit/5
-        public async Task<IActionResult> Edit(Guid? id, Guid? TankId)
+        public async Task<IActionResult> Edit(Guid? Id, Guid? TankId)
         {
-            if (id == null || TankId == null) return NotFound();
+            if (Id == null || TankId == null) return NotFound();
             
-            var fish = await _context.Fish.FindAsync(id);
+            var fish = await _context.Fish.FindAsync(Id);
             if (fish == null) return NotFound();
             
             return View(fish);
@@ -130,23 +127,23 @@ namespace VirtualAquariumManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, Fish fish)
+        public async Task<IActionResult> Edit(Guid Id, Fish Fish)
         {
-            if (fish == null || id != fish.Id) return NotFound();
-            if (!ModelState.IsValid) return View(fish);
+            if (Fish == null || Id != Fish.Id) return NotFound();
+            if (!ModelState.IsValid) return View(Fish);
 
             try
             {
-                _context.Update(fish);
+                _context.Update(Fish);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!FishExists(fish.Id)) return NotFound();
+                if (!FishExists(Fish.Id)) return NotFound();
                 throw;
             }
 
-            return RedirectToAction(nameof(Index), new { TankId = fish.TankId });
+            return RedirectToAction(nameof(Index), new { Fish.TankId });
         }
 
         // GET: Fish/Delete/5
@@ -154,30 +151,30 @@ namespace VirtualAquariumManager.Controllers
         {
             if (Id == null) return NotFound();
             
-            var fish = await _context.Fish.FirstOrDefaultAsync(fish => fish.Id == Id);
-            if (fish == null) return NotFound();
+            var Fish = await _context.Fish.FirstOrDefaultAsync(Fish => Fish.Id == Id);
+            if (Fish == null) return NotFound();
 
-            return View(fish);
+            return View(Fish);
         }
 
         // POST: Fish/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid Id)
         {
-            var fish = await _context.Fish.FindAsync(id);
-            if (fish == null) return NotFound();
+            var Fish = await _context.Fish.FindAsync(Id);
+            if (Fish == null) return NotFound();
 
-            var tankId = fish.TankId;
-            _context.Fish.Remove(fish);
+            var tankId = Fish.TankId;
+            _context.Fish.Remove(Fish);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index), new { TankId = tankId });
         }
 
-        private bool FishExists(Guid id)
+        private bool FishExists(Guid Id)
         {
-            return _context.Fish.Any(e => e.Id == id);
+            return _context.Fish.Any(e => e.Id == Id);
         }
     }
 }

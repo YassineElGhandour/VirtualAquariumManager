@@ -20,7 +20,6 @@ namespace VirtualAquariumManager.Controllers
             if (page < 1) page = 1;
 
             var query = _context.MaintenanceTask.AsQueryable();
-
             if (TankId.HasValue)
             {
                 query = query.Where(task => task.TankId == TankId);

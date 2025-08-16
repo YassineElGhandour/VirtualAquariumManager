@@ -12,15 +12,15 @@ namespace VirtualAquariumManager.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public TanksController(ApplicationDbContext context)
+        public TanksController(ApplicationDbContext Context)
         {
-            _context = context;
+            _context = Context;
         }
 
         // GET: Tanks
-        public async Task<IActionResult> Index(string SearchString, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string SearchString, int Page = 1, int PageSize = 10)
         {
-            if (page < 1) page = 1;
+            if (Page < 1) Page = 1;
 
             var query = _context.Tank.AsQueryable();
 
@@ -48,8 +48,8 @@ namespace VirtualAquariumManager.Controllers
 
             var tanks = await query
                         .OrderBy(t => t.CreatedDate)
-                        .Skip((page - 1) * pageSize)
-                        .Take(pageSize)
+                        .Skip((Page - 1) * PageSize)
+                        .Take(PageSize)
                         .Select(t => new TankWaterQualityData
                         {
                             TankId = t.Id,
@@ -67,40 +67,34 @@ namespace VirtualAquariumManager.Controllers
             var totalTanksCount = await query.CountAsync();
 
             ViewBag.CurrentSearchString = SearchString;
-            ViewBag.PageIndex = page;
-            ViewBag.PageSize = pageSize;
+            ViewBag.PageIndex = Page;
+            ViewBag.PageSize = PageSize;
             ViewBag.TotalCount = totalTanksCount;
 
             return View(tanks);
         }
 
         // GET: Tanks/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid? Id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (Id == null) return NotFound();
 
             var tank = await _context.Tank
-                        .Select(t => new TankWaterQualityData
-                        {
-                            TankId = t.Id,
-                            Shape = t.Shape!,
-                            Size = t.Size,
-                            WaterQuality = t.WaterQuality!,
-                            PhLevel = t.WaterQuality!.PhLevel,
-                            Temperature = t.WaterQuality.Temperature,
-                            AmmoniaLevel = t.WaterQuality.AmmoniaLevel,
-                            WaterType = t.WaterQuality.WaterType,
-                            CreatedDate = t.CreatedDate
-                        })
-                        .FirstOrDefaultAsync(t => t.TankId == id);
+                .Select(t => new TankWaterQualityData
+                {
+                    TankId = t.Id,
+                    Shape = t.Shape!,
+                    Size = t.Size,
+                    WaterQuality = t.WaterQuality!,
+                    PhLevel = t.WaterQuality!.PhLevel,
+                    Temperature = t.WaterQuality.Temperature,
+                    AmmoniaLevel = t.WaterQuality.AmmoniaLevel,
+                    WaterType = t.WaterQuality.WaterType,
+                    CreatedDate = t.CreatedDate
+                })
+                .FirstOrDefaultAsync(t => t.TankId == Id);
 
-            if (tank == null)
-            {
-                return NotFound();
-            }
+            if (tank == null) return NotFound();
 
             return View(tank);
         }
@@ -113,27 +107,24 @@ namespace VirtualAquariumManager.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Tank tank)
+        public async Task<IActionResult> Create(Tank Tank)
         {
             if (ModelState.IsValid)
             {
-                tank.Id = Guid.NewGuid();
-                _context.Add(tank);
+                Tank.Id = Guid.NewGuid();
+                _context.Add(Tank);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(tank);
+            return View(Tank);
         }
 
         // GET: Tanks/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid? Id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tank = await _context.Tank
+            if (Id == null) return NotFound();
+            
+            var Tank = await _context.Tank
                     .Select(t => new TankWaterQualityData
                     {
                         TankId = t.Id,
@@ -146,43 +137,32 @@ namespace VirtualAquariumManager.Controllers
                         WaterType = t.WaterQuality.WaterType,
                         CreatedDate = t.CreatedDate
                     })
-                    .FirstOrDefaultAsync(t => t.TankId == id);
+                    .FirstOrDefaultAsync(t => t.TankId == Id);
 
-            if (tank == null)
-            {
-                return NotFound();
-            }
-            return View(tank);
+            if (Tank == null) return NotFound();
+            
+            return View(Tank);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, TankWaterQualityData TankWaterQualityModal)
+        public async Task<IActionResult> Edit(Guid Id, TankWaterQualityData TankWaterQualityModal)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(TankWaterQualityModal);
-            }
+            if (!ModelState.IsValid) return View(TankWaterQualityModal);
 
-            var tank = await _context.Tank
-                        .Include(t => t.WaterQuality)
-                        .FirstOrDefaultAsync(t => t.Id == id);
-
-            if (tank == null)
-            {
-                return NotFound();
-            }
+            var Tank = await _context.Tank.Include(t => t.WaterQuality).FirstOrDefaultAsync(t => t.Id == Id);
+            if (Tank == null) return NotFound();
 
             try
             {
-                tank.Shape = TankWaterQualityModal.Shape;
-                tank.Size = TankWaterQualityModal.Size;
-                tank.WaterQuality.PhLevel = TankWaterQualityModal.PhLevel;
-                tank.WaterQuality.Temperature = TankWaterQualityModal.Temperature;
-                tank.WaterQuality.AmmoniaLevel = TankWaterQualityModal.AmmoniaLevel;
-                tank.WaterQuality.WaterType = TankWaterQualityModal.WaterType;
+                Tank.Shape = TankWaterQualityModal.Shape;
+                Tank.Size = TankWaterQualityModal.Size;
+                Tank.WaterQuality.PhLevel = TankWaterQualityModal.PhLevel;
+                Tank.WaterQuality.Temperature = TankWaterQualityModal.Temperature;
+                Tank.WaterQuality.AmmoniaLevel = TankWaterQualityModal.AmmoniaLevel;
+                Tank.WaterQuality.WaterType = TankWaterQualityModal.WaterType;
 
-                _context.Update(tank);
+                _context.Update(Tank);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -197,48 +177,35 @@ namespace VirtualAquariumManager.Controllers
                 }
             }
 
-            return RedirectToAction(
-                nameof(Details),
-                new { id = TankWaterQualityModal.TankId }
-            );
+            return RedirectToAction(nameof(Details), new { id = TankWaterQualityModal.TankId });
         }
 
         // GET: Tanks/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid? Id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (Id == null) return NotFound();
+            
+            var Tank = await _context.Tank.FirstOrDefaultAsync(m => m.Id == Id);
+            if (Tank == null) return NotFound();
 
-            var tank = await _context.Tank
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (tank == null)
-            {
-                return NotFound();
-            }
-
-            return View(tank);
+            return View(Tank);
         }
 
         // POST: Tanks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid Id)
         {
-            var tank = await _context.Tank.FindAsync(id);
-            if (tank != null)
-            {
-                _context.Tank.Remove(tank);
-            }
+            var tank = await _context.Tank.FindAsync(Id);
+            if (tank != null) _context.Tank.Remove(tank);
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TankExists(Guid id)
+        private bool TankExists(Guid Id)
         {
-            return _context.Tank.Any(e => e.Id == id);
+            return _context.Tank.Any(e => e.Id == Id);
         }
     }
 }
