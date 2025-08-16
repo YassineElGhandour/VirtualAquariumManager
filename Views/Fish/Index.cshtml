@@ -18,7 +18,7 @@
             <div class="left-controls">
                 <form asp-action="Index" method="get" class="filter-form">
                     <input type="hidden" name="TankId" value="@ViewBag.TankId" />
-                    <input type="text" name="SearchString" class="search-input" placeholder="e.g Tuna" value="@CurrentSearchString" />
+                    <input type="text" name="SearchString" class="search-input" placeholder="e.g Tuna .." value="@CurrentSearchString" />
                     <input type="submit" value="Filter" class="btn btn-grey" />
                     <a asp-action="Index" asp-route-TankId="@TankId" class="btn btn-grey">Clear</a>
                 </form>
@@ -64,10 +64,10 @@
                                 <a asp-action="Edit" asp-route-id="@fish?.Id" asp-route-TankId="@TankId" class="btn btn-blue">Edit</a>
                             </td>
                             <td class="details">
-                                <a asp-action="Details" asp-route-id="@fish?.Id" asp-route-TankId="@TankId" class="btn btn-blue">Details</a>
+                                <a asp-action="Details" asp-route-id="@fish?.Id" class="btn btn-blue">Details</a>
                             </td>
                             <td class="delete">
-                                <a asp-action="Delete" asp-route-id="@fish?.Id" asp-route-TankId="@TankId" class="btn btn-red">Delete</a>
+                                <a asp-action="Delete" asp-route-id="@fish?.Id" class="btn btn-red">Delete</a>
                             </td>
                         </tr>
                     }

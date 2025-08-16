@@ -20,21 +20,15 @@ namespace VirtualAquariumManager.Controllers
         // GET: Tanks
         public async Task<IActionResult> Index(string SearchString, int page = 1, int pageSize = 10)
         {
-            page = page < 1 ? 1 : page;
-            
+            if (page < 1) page = 1;
+
             var query = _context.Tank.AsQueryable();
 
             decimal? asDecimal = null;
-            if (decimal.TryParse(SearchString, out var dec))
-            {
-                asDecimal = dec;
-            }
+            if (decimal.TryParse(SearchString, out var dec)) asDecimal = dec;
 
             DateTime? asDate = null;
-            if (DateTime.TryParse(SearchString, out var dt))
-            {
-                asDate = dt;
-            }
+            if (DateTime.TryParse(SearchString, out var dt)) asDate = dt;
 
             if (!string.IsNullOrWhiteSpace(SearchString))
             {

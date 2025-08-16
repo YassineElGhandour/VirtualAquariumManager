@@ -13,6 +13,8 @@
     <form asp-action="Create" class="form-grid">
         <div asp-validation-summary="ModelOnly" class="text-danger grid-full"></div>
 
+        <input asp-for="TankId" type="hidden" />
+
         <div class="form-field">
             <label asp-for="Name"></label>
             <input asp-for="Name" class="form-control" placeholder="e.g. Bubbles, Sunny" />
@@ -36,8 +38,6 @@
             <input asp-for="ImportedDate" type="date" class="form-control" />
             <span asp-validation-for="ImportedDate" class="text-danger"></span>
         </div>
-
-        <input asp-for="TankId" type="hidden" />
 
         <!-- Create or Cancel -->
         <div class="form-actions grid-full">

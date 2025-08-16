@@ -4,7 +4,6 @@
     ViewData["Title"] = "Edit";
 }
 
-
 <div class="form-container">
     <div class="card-header">
         <h2>Edit Fish Information</h2>
@@ -14,6 +13,7 @@
         <div asp-validation-summary="ModelOnly" class="text-danger grid-full"></div>
 
         <input type="hidden" asp-for="Id" />
+        <input asp-for="TankId" type="hidden" />
 
         <div class="form-field">
             <label asp-for="Name" class="control-label"></label>
@@ -38,8 +38,6 @@
             <input asp-for="ImportedDate" type="date" class="form-control" />
             <span asp-validation-for="ImportedDate" class="text-danger"></span>
         </div>
-
-        <input asp-for="TankId" type="hidden" />
 
         <!-- Edit or Cancel -->
         <div class="form-actions grid-full">

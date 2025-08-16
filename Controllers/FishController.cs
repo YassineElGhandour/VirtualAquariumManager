@@ -18,9 +18,9 @@ namespace VirtualAquariumManager.Controllers
 
         // GET: Fish?TankId=guid
         public async Task<IActionResult> Index(Guid? TankId, string SearchString, int page = 1, int pageSize = 10)
-        {            
-            page = page < 1 ? 1 : page;
-            
+        {
+            if (page < 1) page = 1;
+
             var query = _context.Fish.AsQueryable();
 
             if (TankId.HasValue)
@@ -32,16 +32,10 @@ namespace VirtualAquariumManager.Controllers
             }
 
             int? asInt = null;
-            if (int.TryParse(SearchString, out var it))
-            {
-                asInt = it;
-            }
-
+            if (int.TryParse(SearchString, out var it)) asInt = it;
+            
             DateTime? asDate = null;
-            if (DateTime.TryParse(SearchString, out var dt))
-            {
-                asDate = dt;
-            }
+            if (DateTime.TryParse(SearchString, out var dt)) asDate = dt;
 
             if (!string.IsNullOrWhiteSpace(SearchString))
             {
@@ -86,20 +80,14 @@ namespace VirtualAquariumManager.Controllers
 
         // GET: Fish/Details/5
 
-        public async Task<IActionResult> Details(Guid? id, Guid? TankId)
+        public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null || TankId == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
+            
 
             var fish = await _context.Fish.FirstOrDefaultAsync(fish => fish.Id == id);
-
-            if (fish == null)
-            {
-                return NotFound();
-            }
-
+            if (fish == null) return NotFound();
+            
             return View(fish);
         }
 
@@ -132,17 +120,11 @@ namespace VirtualAquariumManager.Controllers
         // GET: Fish/Edit/5
         public async Task<IActionResult> Edit(Guid? id, Guid? TankId)
         {
-            if (id == null || TankId == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null || TankId == null) return NotFound();
+            
             var fish = await _context.Fish.FindAsync(id);
-
-            if (fish == null)
-            {
-                return NotFound();
-            }
+            if (fish == null) return NotFound();
+            
             return View(fish);
         }
 
@@ -168,18 +150,12 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Fish/Delete/5
-        public async Task<IActionResult> Delete(Guid? id, Guid? TankId)
+        public async Task<IActionResult> Delete(Guid? Id)
         {
-            if (id == null || TankId == null)
-            {
-                return NotFound();
-            }
-
-            var fish = await _context.Fish.FirstOrDefaultAsync(m => m.Id == id);
-            if (fish == null)
-            {
-                return NotFound();
-            }
+            if (Id == null) return NotFound();
+            
+            var fish = await _context.Fish.FirstOrDefaultAsync(fish => fish.Id == Id);
+            if (fish == null) return NotFound();
 
             return View(fish);
         }
@@ -190,11 +166,9 @@ namespace VirtualAquariumManager.Controllers
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var fish = await _context.Fish.FindAsync(id);
-            if (fish == null)
-                return NotFound();
+            if (fish == null) return NotFound();
 
             var tankId = fish.TankId;
-
             _context.Fish.Remove(fish);
             await _context.SaveChangesAsync();
 

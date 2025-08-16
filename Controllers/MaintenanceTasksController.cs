@@ -17,7 +17,7 @@ namespace VirtualAquariumManager.Controllers
         // GET: MaintenanceTasks?TankId=guid
         public async Task<IActionResult> Index(Guid? TankId, string SearchString, int page = 1, int pageSize = 10)
         {
-            page = page < 1 ? 1 : page;
+            if (page < 1) page = 1;
 
             var query = _context.MaintenanceTask.AsQueryable();
 
@@ -31,24 +31,23 @@ namespace VirtualAquariumManager.Controllers
             }
 
             bool? asBool = null;
-            if (bool.TryParse(SearchString, out var bol))
-            {
-                asBool = bol;
-            }
-
+            if (bool.TryParse(SearchString, out var bol)) asBool = bol;
+            
             DateTime? asDate = null;
-            if (DateTime.TryParse(SearchString, out var dt))
-            {
-                asDate = dt;
-            }
-
+            if (DateTime.TryParse(SearchString, out var dt)) asDate = dt;
+            
             if (!string.IsNullOrWhiteSpace(SearchString))
             {
                 SearchString = SearchString.Trim();
                 var pattern = $"%{SearchString}%";
 
+                var enumMatches = Enum.GetValues<MaintenanceType>()
+                    .Where(x => x.ToString().Contains(SearchString, StringComparison.OrdinalIgnoreCase))
+                    .ToArray();
+
                 query = query.Where(task =>
-                    (asDate.HasValue && task.DueDate.Date == asDate.Value.Date)
+                    enumMatches.Contains(task.Type)
+                    || (asDate.HasValue && task.DueDate.Date == asDate.Value.Date)
                     || (asDate.HasValue && task.PerformedOn.Date == asDate.Value.Date)
                     || (asBool.HasValue && task.IsCompleted == asBool.Value)
                 );
@@ -61,6 +60,7 @@ namespace VirtualAquariumManager.Controllers
                         .Take(pageSize)
                         .Select(task => new MaintenanceTask
                         {
+                            Id = task.Id,
                             TankId = task.TankId,
                             Tank = Tank!,
                             DueDate = task.DueDate!,
@@ -84,17 +84,10 @@ namespace VirtualAquariumManager.Controllers
         // GET: MaintenanceTasks/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var maintenanceTask = await _context.MaintenanceTask
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (maintenanceTask == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
+            
+            var maintenanceTask = await _context.MaintenanceTask .FirstOrDefaultAsync(m => m.Id == id);
+            if (maintenanceTask == null) return NotFound();
 
             return View(maintenanceTask);
         }
@@ -128,70 +121,52 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: MaintenanceTasks/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid? Id, Guid? TankId)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (Id == null || TankId == null) return NotFound();
 
-            var maintenanceTask = await _context.MaintenanceTask.FindAsync(id);
-            if (maintenanceTask == null)
-            {
-                return NotFound();
-            }
-            return View(maintenanceTask);
+            var MaintenanceTask = await _context.MaintenanceTask.FindAsync(Id);
+            if (MaintenanceTask == null) return NotFound();
+            
+            return View(MaintenanceTask);
         }
 
         // POST: MaintenanceTasks/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, MaintenanceTask maintenanceTask)
+        public async Task<IActionResult> Edit(Guid Id, MaintenanceTask MaintenanceTask)
         {
-            if (id != maintenanceTask.Id)
-            {
-                return NotFound();
-            }
+            if (MaintenanceTask == null || Id != MaintenanceTask.Id) return NotFound();
+            if (!ModelState.IsValid) return View(MaintenanceTask);
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(maintenanceTask);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MaintenanceTaskExists(maintenanceTask.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(MaintenanceTask);
+                await _context.SaveChangesAsync();
             }
-            return View(maintenanceTask);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!MaintenanceTaskExists(MaintenanceTask.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index), new { MaintenanceTask.TankId });
         }
 
         // GET: MaintenanceTasks/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var maintenanceTask = await _context.MaintenanceTask
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (maintenanceTask == null)
-            {
-                return NotFound();
-            }
+            var MaintenanceTask = await _context.MaintenanceTask.FirstOrDefaultAsync(m => m.Id == id);
+            if (MaintenanceTask == null) return NotFound();
 
-            return View(maintenanceTask);
+            return View(MaintenanceTask);
         }
 
         // POST: MaintenanceTasks/Delete/5
@@ -200,11 +175,8 @@ namespace VirtualAquariumManager.Controllers
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var maintenanceTask = await _context.MaintenanceTask.FindAsync(id);
-            if (maintenanceTask != null)
-            {
-                _context.MaintenanceTask.Remove(maintenanceTask);
-            }
-
+            if (maintenanceTask != null) _context.MaintenanceTask.Remove(maintenanceTask);
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

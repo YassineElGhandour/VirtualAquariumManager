@@ -11,6 +11,7 @@
 
     <form asp-action="Delete" class="form-grid">
         <input type="hidden" asp-for="Id" />
+        <input asp-for="TankId" type="hidden" />
 
         <div class="form-field">
             <label asp-for="Name" class="control-label"></label>
@@ -26,8 +27,6 @@
             <label asp-for="LifeSpan" class="control-label"></label>
             <input asp-for="LifeSpan" readonly class="form-control" />
         </div>
-
-        <input asp-for="TankId" type="hidden" />
 
         <div class="form-actions grid-full">
             <button type="submit" class="btn btn-red">Delete</button>
