@@ -294,9 +294,14 @@ namespace VirtualAquariumManager.Data.Migrations
                     b.Property<decimal>("QuantityGrams")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<Guid?>("TankId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("FishId");
+
+                    b.HasIndex("TankId");
 
                     b.ToTable("FeedingTask");
                 });
@@ -489,6 +494,12 @@ namespace VirtualAquariumManager.Data.Migrations
                     b.HasOne("VirtualAquariumManager.Models.Fish", null)
                         .WithMany("FeedingTasks")
                         .HasForeignKey("FishId");
+
+                    b.HasOne("VirtualAquariumManager.Models.Tank", "Tank")
+                        .WithMany()
+                        .HasForeignKey("TankId");
+
+                    b.Navigation("Tank");
                 });
 
             modelBuilder.Entity("VirtualAquariumManager.Models.Fish", b =>
@@ -514,9 +525,11 @@ namespace VirtualAquariumManager.Data.Migrations
 
             modelBuilder.Entity("VirtualAquariumManager.Models.MaintenanceTask", b =>
                 {
-                    b.HasOne("VirtualAquariumManager.Models.Tank", null)
+                    b.HasOne("VirtualAquariumManager.Models.Tank", "Tank")
                         .WithMany("MaintenanceTasks")
                         .HasForeignKey("TankId");
+
+                    b.Navigation("Tank");
                 });
 
             modelBuilder.Entity("VirtualAquariumManager.Models.Tank", b =>

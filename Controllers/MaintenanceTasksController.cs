@@ -99,39 +99,27 @@ namespace VirtualAquariumManager.Controllers
             return View(maintenanceTask);
         }
 
-        // GET: MaintenanceTasks/Create
-        public async Task<IActionResult> Create(Guid TankId)
+        // GET: MaintenanceTasks/Create?TankId=guid
+        public IActionResult Create(Guid TankId)
         {
-            if (TankId == Guid.Empty)
-            {
-                return NotFound();
-            }
-
-            var Tank = await _context.Tank.FirstOrDefaultAsync(t => t.Id == TankId);
-            if (Tank == null)
-            {
-                return NotFound();
-            }
-
+            if (TankId == Guid.Empty) return NotFound();
+            
             MaintenanceTask MaintenanceTask = new()
             {
                 TankId = TankId,
-                Tank = Tank,
                 IsCompleted = false,
                 Type = MaintenanceType.WaterChange
             };
             return View(MaintenanceTask);
         }
 
-        // POST: MaintenanceTasks/Create
+        // POST: MaintenanceTasks/Create?TankId=guid
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MaintenanceTask MaintenanceTask)
         {
-            if (!ModelState.IsValid)
-            {
-                return NotFound();
-            }
+            if (MaintenanceTask == null) return NotFound();
+            if (!ModelState.IsValid) return View(MaintenanceTask);
 
             MaintenanceTask.Id = Guid.NewGuid();
             _context.Add(MaintenanceTask);

@@ -10,6 +10,6 @@
     public class MaintenanceTask : AquariumTask
     {
         public required MaintenanceType Type { get; set; }
-        public DateTime PerformedOn { get; set; }
+        public DateTime PerformedOn { get; set; } = DateTime.UtcNow;
     }
 }

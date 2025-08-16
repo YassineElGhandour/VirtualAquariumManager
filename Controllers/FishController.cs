@@ -104,8 +104,10 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: Fish/Create
-        public IActionResult Create(Guid? TankId)
+        public IActionResult Create(Guid TankId)
         {
+            if (TankId == Guid.Empty) return NotFound();
+            
             Fish fish = new ()
             {
                 TankId = TankId,

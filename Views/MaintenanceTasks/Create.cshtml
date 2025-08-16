@@ -1,48 +1,55 @@
 ﻿@model VirtualAquariumManager.Models.MaintenanceTask
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create a Maintenance Task";
 }
 
-<h1>Create</h1>
-
-<h4>MaintenanceTask</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Type" class="control-label"></label>
-                <select asp-for="Type" class="form-control"></select>
-                <span asp-validation-for="Type" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PerformedOn" class="control-label"></label>
-                <input asp-for="PerformedOn" class="form-control" />
-                <span asp-validation-for="PerformedOn" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DueDate" class="control-label"></label>
-                <input asp-for="DueDate" class="form-control" />
-                <span asp-validation-for="DueDate" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsCompleted" /> @Html.DisplayNameFor(model => model.IsCompleted)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="form-container">
+    <div class="card-header">
+        <h2>Create Maintenance Task</h2>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <form asp-action="Create" class="form-grid">
+        <div asp-validation-summary="ModelOnly" class="text-danger grid-full"></div>
+
+        <div class="form-field">
+            <label asp-for="Type"></label>
+            <select asp-for="Type"
+                    class="form-control"
+                    asp-items="Html.GetEnumSelectList<MaintenanceType>()"></select>
+            <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="PerformedOn">Performed On</label>
+            <input asp-for="PerformedOn" type="date" class="form-control" />
+            <span asp-validation-for="PerformedOn" class="text-danger"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="DueDate"></label>
+            <input asp-for="DueDate" type="date" class="form-control" />
+            <span asp-validation-for="DueDate" class="text-danger"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="IsCompleted"></label>
+            <input asp-for="IsCompleted" type="checkbox" class="form-check-input" />
+            <span asp-validation-for="IsCompleted" class="text-danger"></span>
+        </div>
+
+        <input asp-for="TankId" type="hidden" />
+
+        <!-- Create or Cancel -->
+        <div class="form-actions grid-full">
+            <button type="submit" class="btn btn-blue">Create</button>
+            <a asp-action="Index" class="btn btn-red">Cancel</a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
