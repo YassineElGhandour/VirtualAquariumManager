@@ -65,7 +65,8 @@ namespace VirtualAquariumManager.Controllers
                             Tank = Tank!,
                             DueDate = task.DueDate!,
                             PerformedOn = task.PerformedOn!,
-                            IsCompleted = task.IsCompleted
+                            IsCompleted = task.IsCompleted,
+                            Type = task.Type,
                         })
                         .ToListAsync();
             var TotalMaintenanceTasksCount = await query.CountAsync();
@@ -99,24 +100,43 @@ namespace VirtualAquariumManager.Controllers
         }
 
         // GET: MaintenanceTasks/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(Guid TankId)
         {
-            return View();
+            if (TankId == Guid.Empty)
+            {
+                return NotFound();
+            }
+
+            var Tank = await _context.Tank.FirstOrDefaultAsync(t => t.Id == TankId);
+            if (Tank == null)
+            {
+                return NotFound();
+            }
+
+            MaintenanceTask MaintenanceTask = new()
+            {
+                TankId = TankId,
+                Tank = Tank,
+                IsCompleted = false,
+                Type = MaintenanceType.WaterChange
+            };
+            return View(MaintenanceTask);
         }
 
         // POST: MaintenanceTasks/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(MaintenanceTask maintenanceTask)
+        public async Task<IActionResult> Create(MaintenanceTask MaintenanceTask)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                maintenanceTask.Id = Guid.NewGuid();
-                _context.Add(maintenanceTask);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            return View(maintenanceTask);
+
+            MaintenanceTask.Id = Guid.NewGuid();
+            _context.Add(MaintenanceTask);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index), new { MaintenanceTask.TankId });
         }
 
         // GET: MaintenanceTasks/Edit/5

@@ -8,6 +8,7 @@
     var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
     var CurrentSearchString = (string)(ViewBag.CurrentSearchString);
     var counter = (pageIndex - 1) * pageSize;
+    var TankId = (Guid?)ViewBag.TankId;
 }
 
 <div class="view-wrapper mx-4">
@@ -21,7 +22,7 @@
                     <a asp-action="Index" class="btn btn-grey">Clear</a>
                 </form>
             </div>
-            <a asp-action="Create" class="btn btn-blue btn-create">Create New Task</a>
+            <a asp-action="Create" asp-route-TankId="@(TankId!)" class="btn btn-blue btn-create">Create New Maintenance task </a>
         </div>
 
         <hr class="section-divider" />

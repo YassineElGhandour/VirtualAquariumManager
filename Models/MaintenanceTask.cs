@@ -9,7 +9,7 @@
 
     public class MaintenanceTask : AquariumTask
     {
-        public MaintenanceType Type { get; set; }
+        public required MaintenanceType Type { get; set; }
         public DateTime PerformedOn { get; set; }
     }
 }
